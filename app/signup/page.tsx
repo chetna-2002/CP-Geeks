@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { CheckCircle2, ChevronLeft } from 'lucide-react'
-import { supabase } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -25,35 +25,21 @@ export default function SignupPage() {
     setError('')
   }
 
-  // const handleSignup = async (e: React.FormEvent) => {
-  //   e.preventDefault()
 
-  //   if (formData.password !== formData.confirmPassword) {
-  //     setError('Passwords do not match')
-  //     return
-  //   }
-
-  //   if (formData.password.length < 8) {
-  //     setError('Password must be at least 8 characters')
-  //     return
-  //   }
-
-  //   setIsLoading(true)
-  //   try {
-  //     // Simulate signup request
-  //     await new Promise((resolve) => setTimeout(resolve, 1000))
-  //     console.log('Signup attempted with:', { 
-  //       name: formData.name,
-  //       email: formData.email 
-  //     })
-  //     // Here you would typically call your authentication API
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+  const supabase = createClient()
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    // const { data, error } = await supabase.auth.signUp({
+    //   email: formData.email,
+    //   password: formData.password,
+    //   options: {
+    //     data: {
+    //       name: formData.name,
+    //     },
+    //   },
+    // })
+
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
@@ -77,6 +63,13 @@ export default function SignupPage() {
           },
         },
       })
+      if (data.user) {
+        await supabase.from('profiles').insert({
+          id: data.user.id,
+          email: data.user.email,
+          full_name: name,
+        })
+      }
 
       console.log('SIGNUP RESULT', { data, error })
 
