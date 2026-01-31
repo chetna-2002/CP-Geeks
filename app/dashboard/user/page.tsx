@@ -6,39 +6,98 @@ import { Navbar } from '@/components/navbar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { BookOpen, Settings, ShoppingCart, Award, Clock, Star } from 'lucide-react'
+import { createClient } from '@/utils/supabase/client'
 
 export default function DashboardPage() {
+  const [userName, setUserName] = useState<string>('User')
+
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set())
+ const [purchasedCourses, setPurchasedCourses] = useState<any[]>([])
+ useEffect(() => {
+  const fetchDashboardData = async () => {
+    const supabase = createClient()
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setVisibleElements((prev) => new Set([...prev, entry.target.id]))
-          observer.unobserve(entry.target)
-        }
-      })
-    }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' })
+    // 1️⃣ Get logged-in user
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-    document.querySelectorAll('[data-scroll-animate]').forEach((el) => {
-      observer.observe(el)
-    })
+    if (!user) return
 
-    return () => observer.disconnect()
-  }, [])
+    // 2️⃣ Get profile (for name)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single()
 
-  const purchasedCourses = [
-    { id: 1, title: 'Complete DSA Mastery', instructor: 'Harkirat Singh', progress: 65, duration: '48 hours', image: 'from-purple-500 to-pink-500' },
-    { id: 2, title: 'System Design Expert', instructor: 'Sandeep Jain', progress: 32, duration: '40 hours', image: 'from-blue-500 to-cyan-500' },
-    { id: 3, title: 'Web Development Pro', instructor: 'Akshay Saini', progress: 89, duration: '56 hours', image: 'from-green-500 to-emerald-500' },
-  ]
+    if (profile?.full_name) {
+      setUserName(profile.full_name)
+    }
 
+    // 3️⃣ Get enrolled courses
+    const { data, error } = await supabase
+      .from('enrollments')
+      .select(`
+        id,
+        courses (
+          id,
+          title,
+          instructor_name,
+          duration
+        )
+      `)
+      .eq('user_id', user.id)
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    const mappedCourses = data.map((item: any) => ({
+      id: item.courses.id,
+      title: item.courses.title,
+      instructor: item.courses.instructor_name,
+      progress: 0,
+      duration: item.courses.duration ?? '—',
+      image: 'from-purple-500 to-pink-500',
+    }))
+
+    setPurchasedCourses(mappedCourses)
+  }
+
+  fetchDashboardData()
+}, [])
+console.log("in user dashboard", purchasedCourses);
+
+
+ 
   const stats = [
-    { label: 'Courses Enrolled', value: '3', icon: BookOpen, color: 'text-blue-500' },
-    { label: 'Learning Hours', value: '144', icon: Clock, color: 'text-purple-500' },
-    { label: 'Certificates', value: '1', icon: Award, color: 'text-green-500' },
-    { label: 'Wishlist Items', value: '5', icon: ShoppingCart, color: 'text-orange-500' },
-  ]
+  {
+    label: 'Courses Enrolled',
+    value: purchasedCourses.length.toString(),
+    icon: BookOpen,
+    color: 'text-blue-500',
+  },
+  {
+    label: 'Learning Hours',
+    value: '—', 
+    icon: Clock,
+    color: 'text-purple-500',
+  },
+  {
+    label: 'Certificates',
+    value: '0',
+    icon: Award,
+    color: 'text-green-500',
+  },
+  {
+    label: 'Wishlist Items',
+    value: '0',
+    icon: ShoppingCart,
+    color: 'text-orange-500',
+  },
+]
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,7 +107,7 @@ export default function DashboardPage() {
       <section className="border-b border-border/30 py-12 bg-gradient-to-r from-primary/5 via-transparent to-primary/5">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold text-foreground">Welcome back, Arjun!</h1>
+            <h1 className="text-4xl font-bold text-foreground">Welcome back, {userName}!</h1>
             <p className="text-lg text-foreground/70">Continue your learning journey with CP Geeks</p>
           </div>
         </div>
@@ -94,13 +153,12 @@ export default function DashboardPage() {
               <p className="text-foreground/60 mt-1">Pick up where you left off</p>
             </div>
             <Link href="/dashboard/my-courses">
-              <Button variant="outline" className="bg-transparent">View All</Button>
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {purchasedCourses.map((course, i) => {
-              const isVisible = visibleElements.has(`course-${i}`)
+              const isVisible = true;
               return (
                 <div
                   key={course.id}

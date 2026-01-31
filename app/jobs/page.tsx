@@ -4,102 +4,39 @@ import { Navbar } from '@/components/navbar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Briefcase, MapPin, DollarSign } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo,useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
+import Link from 'next/link'
+
 
 export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
 
-  const jobs = [
-    {
-      id: 1,
-      title: 'Senior Backend Engineer',
-      company: 'Google',
-      location: 'Mountain View, CA',
-      salary: '$200k - $250k',
-      type: 'Full-time',
-      category: 'backend',
-      skills: ['Go', 'Java', 'Kubernetes', 'System Design'],
-      featured: true,
-    },
-    {
-      id: 2,
-      title: 'Full Stack Developer',
-      company: 'Uber',
-      location: 'San Francisco, CA',
-      salary: '$180k - $230k',
-      type: 'Full-time',
-      category: 'fullstack',
-      skills: ['React', 'Node.js', 'Python', 'AWS'],
-      featured: true,
-    },
-    {
-      id: 3,
-      title: 'Frontend Engineer',
-      company: 'Meta',
-      location: 'Menlo Park, CA',
-      salary: '$170k - $220k',
-      type: 'Full-time',
-      category: 'frontend',
-      skills: ['React', 'JavaScript', 'TypeScript', 'CSS'],
-      featured: true,
-    },
-    {
-      id: 4,
-      title: 'DevOps Engineer',
-      company: 'Amazon',
-      location: 'Remote',
-      salary: '$160k - $210k',
-      type: 'Full-time',
-      category: 'devops',
-      skills: ['AWS', 'Kubernetes', 'Terraform', 'Docker'],
-      featured: false,
-    },
-    {
-      id: 5,
-      title: 'Data Engineer',
-      company: 'Microsoft',
-      location: 'Seattle, WA',
-      salary: '$150k - $200k',
-      type: 'Full-time',
-      category: 'data',
-      skills: ['Python', 'Spark', 'SQL', 'Big Data'],
-      featured: false,
-    },
-    {
-      id: 6,
-      title: 'Machine Learning Engineer',
-      company: 'OpenAI',
-      location: 'San Francisco, CA',
-      salary: '$190k - $240k',
-      type: 'Full-time',
-      category: 'ml',
-      skills: ['Python', 'TensorFlow', 'PyTorch', 'ML'],
-      featured: false,
-    },
-    {
-      id: 7,
-      title: 'Mobile Developer',
-      company: 'Apple',
-      location: 'Cupertino, CA',
-      salary: '$170k - $220k',
-      type: 'Full-time',
-      category: 'mobile',
-      skills: ['Swift', 'iOS', 'Objective-C', 'UI/UX'],
-      featured: false,
-    },
-    {
-      id: 8,
-      title: 'Cloud Architect',
-      company: 'IBM',
-      location: 'Remote',
-      salary: '$180k - $230k',
-      type: 'Full-time',
-      category: 'cloud',
-      skills: ['AWS', 'Azure', 'GCP', 'Architecture'],
-      featured: false,
-    },
-  ]
+  const [jobs, setJobs] = useState<any[]>([])
+
+  useEffect(() => {
+  const fetchJobs = async () => {
+    const supabase = createClient()
+
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching jobs:', error)
+      return
+    }
+
+    setJobs(data)
+  }
+
+  fetchJobs()
+}, [])
+
+
 
   const categories = [
     { id: 'all', label: 'All Jobs' },
@@ -117,15 +54,17 @@ export default function JobsPage() {
         job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.skills.some((skill) =>
+        job.skills.some((skill:string) =>
           skill.toLowerCase().includes(searchTerm.toLowerCase())
         )
 
-      const matchesCategory = selectedCategory === 'all' || job.category === selectedCategory
+     const matchesCategory =
+  selectedCategory === 'all' || job.category === selectedCategory
+
 
       return matchesSearch && matchesCategory
     })
-  }, [searchTerm, selectedCategory])
+  }, [searchTerm, selectedCategory,jobs])
 
   return (
     <div className="min-h-screen bg-background">
@@ -215,9 +154,12 @@ export default function JobsPage() {
                         </div>
                         <p className="text-sm text-primary font-semibold mt-1">{job.company}</p>
                       </div>
-                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                        Apply Now
-                      </Button>
+                     <Link href={`/jobs/${job.id}`}>
+  <Button className="bg-primary hover:bg-primary/90">
+    View Job
+  </Button>
+</Link>
+
                     </div>
 
                     {/* Details */}
@@ -232,13 +174,14 @@ export default function JobsPage() {
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <Briefcase className="h-4 w-4 text-foreground/60" />
-                        <span className="text-foreground/80">{job.type}</span>
+                        <span className="text-foreground/80">{job.job_type}</span>
+
                       </div>
                     </div>
 
                     {/* Skills */}
                     <div className="flex flex-wrap gap-2">
-                      {job.skills.map((skill, j) => (
+                      {job.skills?.map((skill: string, j: number) => (
                         <span
                           key={j}
                           className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold"
