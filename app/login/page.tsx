@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const router= useRouter();
+  const router = useRouter();
   const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -25,7 +25,7 @@ export default function LoginPage() {
         email,
         password,
       })
-      console.log("login page ka hu : " , data.user)
+      console.log("login page ka hu : ", data.user)
       if (error) {
         alert(error.message)
         console.log("error in login : ", error)
@@ -33,7 +33,20 @@ export default function LoginPage() {
       }
 
       console.log('Logged in user:', data.user);
-      router.push('/dashboard')
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .single()
+
+      console.log("User role is : ", profile?.role);
+
+      // Redirect based on role
+      if (profile?.role === 'admin') {
+        router.push('/dashboard/admin');
+      } else {
+        router.push('/dashboard/user');
+      }
     } catch (err) {
       console.error(err)
       alert('Something went wrong')
@@ -42,127 +55,127 @@ export default function LoginPage() {
     }
   }
 
-return (
-  <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden">
-    {/* Animated background elements */}
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
-    </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+      </div>
 
-    <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12 sm:px-6 lg:px-8">
-      {/* Back Button */}
-      <Link href="/" className="absolute top-4 left-4 sm:top-8 sm:left-8 animate-fade-in">
-        <Button variant="ghost" size="sm" className="gap-2 hover:bg-primary/10">
-          <ChevronLeft className="h-4 w-4" />
-          Back
-        </Button>
-      </Link>
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+        {/* Back Button */}
+        <Link href="/" className="absolute top-4 left-4 sm:top-8 sm:left-8 animate-fade-in">
+          <Button variant="ghost" size="sm" className="gap-2 hover:bg-primary/10">
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </Link>
 
-      <div className="w-full max-w-md space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground mx-auto font-bold text-lg">
-            CG
+        <div className="w-full max-w-md space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground mx-auto font-bold text-lg">
+              CG
+            </div>
+            <h1 className="text-3xl font-bold text-foreground">Welcome to CP Geeks</h1>
+            <p className="text-foreground/60">Build the future of tech with industry-leading courses</p>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Welcome to CP Geeks</h1>
-          <p className="text-foreground/60">Build the future of tech with industry-leading courses</p>
-        </div>
 
-        {/* Login Card */}
-        <Card className="border border-border/50 shadow-xl backdrop-blur-sm bg-background/95 animate-slide-up">
-          <CardHeader>
-            <CardTitle>Sign In</CardTitle>
-            <CardDescription>
-              Enter your credentials to access your dashboard
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="font-medium">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-10 border-border/50 focus:border-primary"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="font-medium">Password</Label>
-                  <Link href="#" className="text-xs text-primary hover:underline font-medium">
-                    Forgot password?
-                  </Link>
+          {/* Login Card */}
+          <Card className="border border-border/50 shadow-xl backdrop-blur-sm bg-background/95 animate-slide-up">
+            <CardHeader>
+              <CardTitle>Sign In</CardTitle>
+              <CardDescription>
+                Enter your credentials to access your dashboard
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="font-medium">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="h-10 border-border/50 focus:border-primary"
+                  />
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-10 border-border/50 focus:border-primary"
-                />
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="font-medium">Password</Label>
+                    <Link href="#" className="text-xs text-primary hover:underline font-medium">
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="h-10 border-border/50 focus:border-primary"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Signing in...' : 'Sign In'}
+                </Button>
+              </form>
+
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border/30"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-background text-foreground/50">Or continue with</span>
+                </div>
               </div>
 
               <Button
-                type="submit"
-                className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all"
-                disabled={isLoading}
+                variant="outline"
+                className="w-full h-10 border-border/50 hover:bg-foreground/5 bg-transparent"
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="currentColor" />
+                </svg>
+                Google
               </Button>
-            </form>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border/30"></div>
+              <p className="mt-6 text-center text-sm text-foreground/60">
+                New to CP Geeks?{' '}
+                <Link href="/signup" className="font-semibold text-primary hover:underline">
+                  Create an account
+                </Link>
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Footer CTA */}
+          <div className="text-center text-sm text-foreground/50 space-y-2">
+            <p>Join 15k+ engineers learning at CP Geeks</p>
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex -space-x-2">
+                <div className="h-6 w-6 rounded-full bg-primary/70"></div>
+                <div className="h-6 w-6 rounded-full bg-primary/50"></div>
+                <div className="h-6 w-6 rounded-full bg-primary/30"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-background text-foreground/50">Or continue with</span>
-              </div>
+              <span className="text-xs">★★★★★ 4.9/5</span>
             </div>
-
-            <Button
-              variant="outline"
-              className="w-full h-10 border-border/50 hover:bg-foreground/5 bg-transparent"
-            >
-              <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="currentColor" />
-              </svg>
-              Google
-            </Button>
-
-            <p className="mt-6 text-center text-sm text-foreground/60">
-              New to CP Geeks?{' '}
-              <Link href="/signup" className="font-semibold text-primary hover:underline">
-                Create an account
-              </Link>
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Footer CTA */}
-        <div className="text-center text-sm text-foreground/50 space-y-2">
-          <p>Join 15k+ engineers learning at CP Geeks</p>
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex -space-x-2">
-              <div className="h-6 w-6 rounded-full bg-primary/70"></div>
-              <div className="h-6 w-6 rounded-full bg-primary/50"></div>
-              <div className="h-6 w-6 rounded-full bg-primary/30"></div>
-            </div>
-            <span className="text-xs">★★★★★ 4.9/5</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <style>{`
+      <style>{`
         @keyframes fade-in {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -187,6 +200,6 @@ return (
           animation-delay: 2s;
         }
       `}</style>
-  </div>
-)
+    </div>
+  )
 }
