@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { CheckCircle2, ChevronLeft } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -27,19 +28,60 @@ export default function SignupPage() {
 
 
   const supabase = createClient()
+  const router = useRouter()
+  // const handleSignup = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   setError('')
+
+
+  //   if (formData.password !== formData.confirmPassword) {
+  //     setError('Passwords do not match')
+  //     return
+  //   }
+
+  //   if (formData.password.length < 8) {
+  //     setError('Password must be at least 8 characters')
+  //     return
+  //   }
+
+  //   setIsLoading(true)
+
+  //   try {
+  //     const { data, error } = await supabase.auth.signUp({
+  //       email: formData.email,
+  //       password: formData.password,
+  //       options: {
+  //         data: {
+  //           name: formData.name, // stored in user_metadata
+  //         },
+  //       },
+  //     })
+  //     if (data.user) {
+  //       await supabase.from('profiles').insert({
+  //         id: data.user.id,
+  //         email: data.user.email,
+  //         full_name: name,
+  //       })
+  //     }
+
+  //     console.log('SIGNUP RESULT', { data, error })
+
+  //     if (error) {
+  //       setError(error.message)
+  //       return
+  //     }
+
+  //     // Optional: redirect or show success message
+  //     // router.push('/login')
+  //   } catch (err) {
+  //     setError('Something went wrong. Please try again.')
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    // const { data, error } = await supabase.auth.signUp({
-    //   email: formData.email,
-    //   password: formData.password,
-    //   options: {
-    //     data: {
-    //       name: formData.name,
-    //     },
-    //   },
-    // })
-
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
@@ -59,33 +101,28 @@ export default function SignupPage() {
         password: formData.password,
         options: {
           data: {
-            name: formData.name, // stored in user_metadata
+            name: formData.name,
           },
         },
       })
-      if (data.user) {
-        await supabase.from('profiles').insert({
-          id: data.user.id,
-          email: data.user.email,
-          full_name: name,
-        })
-      }
-
-      console.log('SIGNUP RESULT', { data, error })
 
       if (error) {
         setError(error.message)
         return
       }
 
-      // Optional: redirect or show success message
-      // router.push('/login')
+      // ✅ USER CREATED → REDIRECT TO LOGIN
+      if (data.user) {
+        router.push('/login')
+      }
     } catch (err) {
-      setError('Something went wrong. Please try again.')
+      setError('Something went wrong')
     } finally {
       setIsLoading(false)
     }
   }
+
+
 
 
   const benefits = [

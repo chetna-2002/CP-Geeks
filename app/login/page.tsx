@@ -25,9 +25,10 @@ export default function LoginPage() {
         email,
         password,
       })
-
+      console.log("login page ka hu : " , data.user)
       if (error) {
         alert(error.message)
+        console.log("error in login : ", error)
         return
       }
 
