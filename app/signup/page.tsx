@@ -9,8 +9,13 @@ import { Label } from '@/components/ui/label'
 import { CheckCircle2, ChevronLeft } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { icons, Eye, EyeOff } from 'lucide-react'
 
 export default function SignupPage() {
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,56 +34,8 @@ export default function SignupPage() {
 
   const supabase = createClient()
   const router = useRouter()
-  // const handleSignup = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   setError('')
 
 
-  //   if (formData.password !== formData.confirmPassword) {
-  //     setError('Passwords do not match')
-  //     return
-  //   }
-
-  //   if (formData.password.length < 8) {
-  //     setError('Password must be at least 8 characters')
-  //     return
-  //   }
-
-  //   setIsLoading(true)
-
-  //   try {
-  //     const { data, error } = await supabase.auth.signUp({
-  //       email: formData.email,
-  //       password: formData.password,
-  //       options: {
-  //         data: {
-  //           name: formData.name, // stored in user_metadata
-  //         },
-  //       },
-  //     })
-  //     if (data.user) {
-  //       await supabase.from('profiles').insert({
-  //         id: data.user.id,
-  //         email: data.user.email,
-  //         full_name: name,
-  //       })
-  //     }
-
-  //     console.log('SIGNUP RESULT', { data, error })
-
-  //     if (error) {
-  //       setError(error.message)
-  //       return
-  //     }
-
-  //     // Optional: redirect or show success message
-  //     // router.push('/login')
-  //   } catch (err) {
-  //     setError('Something went wrong. Please try again.')
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -222,33 +179,61 @@ export default function SignupPage() {
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative">
                     <Label htmlFor="password" className="font-medium">Password</Label>
+
                     <Input
                       id="password"
                       name="password"
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="At least 8 characters"
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      className="h-10 border-border/50 focus:border-primary"
+                      className="h-10 border-border/50 focus:border-primary pr-10"
                     />
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="font-medium">Confirm Password</Label>
+                    {showPassword ? (
+                      <EyeOff
+                        className="absolute right-3 top-9 cursor-pointer text-muted-foreground"
+                        onClick={() => setShowPassword(false)}
+                      />
+                    ) : (
+                      <Eye
+                        className="absolute right-3 top-9 cursor-pointer text-muted-foreground"
+                        onClick={() => setShowPassword(true)}
+                      />
+                    )}
+                  </div>
+                  <div className="space-y-2 relative">
+                    <Label htmlFor="confirmPassword" className="font-medium">
+                      Confirm Password
+                    </Label>
+
                     <Input
                       id="confirmPassword"
                       name="confirmPassword"
-                      type="password"
+                      type={showConfirmPassword ? 'text' : 'password'}
                       placeholder="Confirm your password"
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
-                      className="h-10 border-border/50 focus:border-primary"
+                      className="h-10 border-border/50 focus:border-primary pr-10"
                     />
+
+                    {showConfirmPassword ? (
+                      <EyeOff
+                        className="absolute right-3 top-9 cursor-pointer text-muted-foreground"
+                        onClick={() => setShowConfirmPassword(false)}
+                      />
+                    ) : (
+                      <Eye
+                        className="absolute right-3 top-9 cursor-pointer text-muted-foreground"
+                        onClick={() => setShowConfirmPassword(true)}
+                      />
+                    )}
                   </div>
+
 
                   {error && (
                     <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-md">

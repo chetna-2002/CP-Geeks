@@ -6,10 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { ArrowRight, ChevronLeft } from 'lucide-react'
+import { ArrowRight, ChevronLeft, User } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
+import { Eye, EyeOff } from 'lucide-react'
+
 
 export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false)
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -33,7 +37,7 @@ export default function LoginPage() {
       }
 
       console.log('Logged in user:', data.user);
-      
+
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
@@ -54,6 +58,23 @@ export default function LoginPage() {
       setIsLoading(false)
     }
   }
+  const handleForgotPassword = async () => {
+    if (!email) {
+      alert('Please enter your email first')
+      return
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      alert('Password reset link sent to your email')
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden">
@@ -105,23 +126,39 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password" className="font-medium">Password</Label>
-                    <Link href="#" className="text-xs text-primary hover:underline font-medium">
+                    <Link href="#" onClick={handleForgotPassword} className="text-xs text-primary hover:underline font-medium">
                       Forgot password?
+                    
+
                     </Link>
                   </div>
+
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-10 border-border/50 focus:border-primary"
+                    className="h-10 border-border/50 focus:border-primary pr-10"
                   />
+
+                  {showPassword ? (
+                    <EyeOff
+                      className="absolute right-3 top-9 cursor-pointer text-muted-foreground"
+                      onClick={() => setShowPassword(false)}
+                    />
+                  ) : (
+                    <Eye
+                      className="absolute right-3 top-9 cursor-pointer text-muted-foreground"
+                      onClick={() => setShowPassword(true)}
+                    />
+                  )}
                 </div>
+
 
                 <Button
                   type="submit"
