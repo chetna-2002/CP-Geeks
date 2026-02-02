@@ -1,80 +1,84 @@
-'use client'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import { ArrowRight, ChevronLeft, User } from 'lucide-react'
-import { createClient } from '@/utils/supabase/client'
-import { Eye, EyeOff } from 'lucide-react'
-
+"use client";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { ArrowRight, ChevronLeft, User } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
-      console.log("login page ka hu : ", data.user)
+      });
+      console.log("login page ka hu : ", data.user);
       if (error) {
-        alert(error.message)
-        console.log("error in login : ", error)
-        return
+        alert(error.message);
+        console.log("error in login : ", error);
+        return;
       }
 
-      console.log('Logged in user:', data.user);
+      console.log("Logged in user:", data.user);
 
       const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .single()
+        .from("profiles")
+        .select("role")
+        .single();
 
       console.log("User role is : ", profile?.role);
 
       // Redirect based on role
-      if (profile?.role === 'admin') {
-        router.push('/dashboard/admin');
+      if (profile?.role === "admin") {
+        router.push("/dashboard/admin");
       } else {
-        router.push('/dashboard/user');
+        router.push("/dashboard/user");
       }
     } catch (err) {
-      console.error(err)
-      alert('Something went wrong')
+      console.error(err);
+      alert("Something went wrong");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
   const handleForgotPassword = async () => {
     if (!email) {
-      alert('Please enter your email first')
-      return
+      alert("Please enter your email first");
+      return;
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
-    })
+    });
 
     if (error) {
-      alert(error.message)
+      alert(error.message);
     } else {
-      alert('Password reset link sent to your email')
+      alert("Password reset link sent to your email");
     }
-  }
-
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden">
@@ -86,8 +90,15 @@ export default function LoginPage() {
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12 sm:px-6 lg:px-8">
         {/* Back Button */}
-        <Link href="/" className="absolute top-4 left-4 sm:top-8 sm:left-8 animate-fade-in">
-          <Button variant="ghost" size="sm" className="gap-2 hover:bg-primary/10">
+        <Link
+          href="/"
+          className="absolute top-4 left-4 sm:top-8 sm:left-8 animate-fade-in"
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 hover:bg-primary/10"
+          >
             <ChevronLeft className="h-4 w-4" />
             Back
           </Button>
@@ -95,12 +106,19 @@ export default function LoginPage() {
 
         <div className="w-full max-w-md space-y-8">
           {/* Header */}
-          <div className="text-center space-y-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div
+            className="text-center space-y-3 animate-fade-in"
+            style={{ animationDelay: "0.2s" }}
+          >
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground mx-auto font-bold text-lg">
               CG
             </div>
-            <h1 className="text-3xl font-bold text-foreground">Welcome to CP Geeks</h1>
-            <p className="text-foreground/60">Build the future of tech with industry-leading courses</p>
+            <h1 className="text-3xl font-bold text-foreground">
+              Welcome to CP Geeks
+            </h1>
+            <p className="text-foreground/60">
+              Build the future of tech with industry-leading courses
+            </p>
           </div>
 
           {/* Login Card */}
@@ -114,7 +132,9 @@ export default function LoginPage() {
             <CardContent>
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="font-medium">Email Address</Label>
+                  <Label htmlFor="email" className="font-medium">
+                    Email Address
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -128,17 +148,21 @@ export default function LoginPage() {
 
                 <div className="space-y-2 relative">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="font-medium">Password</Label>
-                    <Link href="#" onClick={handleForgotPassword} className="text-xs text-primary hover:underline font-medium">
+                    <Label htmlFor="password" className="font-medium">
+                      Password
+                    </Label>
+                    <Link
+                      href="#"
+                      onClick={handleForgotPassword}
+                      className="text-xs text-primary hover:underline font-medium"
+                    >
                       Forgot password?
-                    
-
                     </Link>
                   </div>
 
                   <Input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -159,13 +183,12 @@ export default function LoginPage() {
                   )}
                 </div>
 
-
                 <Button
                   type="submit"
                   className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Signing in...' : 'Sign In'}
+                  {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
 
@@ -173,24 +196,14 @@ export default function LoginPage() {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-border/30"></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-background text-foreground/50">Or continue with</span>
-                </div>
               </div>
 
-              <Button
-                variant="outline"
-                className="w-full h-10 border-border/50 hover:bg-foreground/5 bg-transparent"
-              >
-                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="currentColor" />
-                </svg>
-                Google
-              </Button>
-
               <p className="mt-6 text-center text-sm text-foreground/60">
-                New to CP Geeks?{' '}
-                <Link href="/signup" className="font-semibold text-primary hover:underline">
+                New to CP Geeks?{" "}
+                <Link
+                  href="/signup"
+                  className="font-semibold text-primary hover:underline"
+                >
                   Create an account
                 </Link>
               </p>
@@ -238,5 +251,5 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
-  )
+  );
 }
