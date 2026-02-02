@@ -4,39 +4,38 @@ import { Navbar } from '@/components/navbar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Briefcase, MapPin, DollarSign } from 'lucide-react'
-import { useState, useMemo,useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
-
+import { useRouter } from 'next/navigation'
 
 export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
-
   const [jobs, setJobs] = useState<any[]>([])
-
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
   useEffect(() => {
-  const fetchJobs = async () => {
-    const supabase = createClient()
+    const fetchJobs = async () => {
+      const supabase = createClient()
 
-    const { data, error } = await supabase
-      .from('jobs')
-      .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('status', 'Active')
+        .order('posted_date', { ascending: false })
 
-    if (error) {
-      console.error('Error fetching jobs:', error)
-      return
+      if (error) {
+        console.error('Error fetching jobs:', error)
+      } else {
+        setJobs(data || [])
+      }
+
+      setLoading(false)
     }
 
-    setJobs(data)
-  }
-
-  fetchJobs()
-}, [])
-
-
+    fetchJobs()
+  }, [])
 
   const categories = [
     { id: 'all', label: 'All Jobs' },
@@ -50,21 +49,19 @@ export default function JobsPage() {
 
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
+      const search = searchTerm.toLowerCase()
+
       const matchesSearch =
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.skills.some((skill:string) =>
-          skill.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        job.title.toLowerCase().includes(search) ||
+        job.company.toLowerCase().includes(search) ||
+        (job.location?.toLowerCase().includes(search) ?? false)
 
-     const matchesCategory =
-  selectedCategory === 'all' || job.category === selectedCategory
-
+      // Category not yet supported in DB
+      const matchesCategory = selectedCategory === 'all'
 
       return matchesSearch && matchesCategory
     })
-  }, [searchTerm, selectedCategory,jobs])
+  }, [searchTerm, selectedCategory, jobs])
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,123 +69,95 @@ export default function JobsPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/30 py-16">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/15 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/15 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
         </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">Find Your Dream Job</h1>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              Exclusive job opportunities at top tech companies for our graduates
-            </p>
-          </div>
+        <div className="relative z-10 mx-auto max-w-7xl px-4 text-center space-y-4">
+          <h1 className="text-4xl md:text-5xl font-bold">Find Your Dream Job</h1>
+          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+            Exclusive job opportunities at top tech companies
+          </p>
         </div>
       </section>
 
-      {/* Search and Filters */}
+      {/* Search & Filters */}
       <section className="border-b border-border/30 py-8">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6">
-            {/* Search */}
-            <div className="relative animate-slide-up">
-              <Search className="absolute left-4 top-3 h-5 w-5 text-foreground/40" />
-              <Input
-                placeholder="Search jobs, companies, or skills..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 h-11 border-border/50 focus:border-primary"
-              />
-            </div>
-
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2 animate-slide-up" style={{ animationDelay: '100ms' }}>
-              {categories.map((cat) => (
-                <Button
-                  key={cat.id}
-                  variant={selectedCategory === cat.id ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`transition-all ${selectedCategory === cat.id ? 'bg-primary hover:bg-primary/90' : 'border-border/50 hover:border-primary/30'}`}
-                >
-                  {cat.label}
-                </Button>
-              ))}
-            </div>
-
-            {/* Results count */}
-            <p className="text-sm text-foreground/60">
-              Showing <span className="font-semibold text-foreground">{filteredJobs.length}</span> of {jobs.length} jobs
-            </p>
+        <div className="mx-auto max-w-7xl px-4 space-y-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-3 h-5 w-5 text-foreground/40" />
+            <Input
+              placeholder="Search jobs or companies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12 h-11"
+            />
           </div>
+
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <Button
+                key={cat.id}
+                variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedCategory(cat.id)}
+              >
+                {cat.label}
+              </Button>
+            ))}
+          </div>
+
+          <p className="text-sm text-foreground/60">
+            Showing <span className="font-semibold">{filteredJobs.length}</span> of {jobs.length} jobs
+          </p>
         </div>
       </section>
 
-      {/* Jobs Grid */}
+      {/* Jobs List */}
       <section className="py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {filteredJobs.length > 0 ? (
+        <div className="mx-auto max-w-7xl px-4">
+          {loading ? (
+            <p className="text-center text-foreground/60">Loading jobs...</p>
+          ) : filteredJobs.length > 0 ? (
             <div className="space-y-4">
-              {filteredJobs.map((job, i) => (
+              {filteredJobs.map((job) => (
                 <div
                   key={job.id}
-                  className={`group rounded-xl border border-border/50 overflow-hidden hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-card animate-slide-up ${
-                    job.featured ? 'ring-1 ring-primary/30' : ''
-                  }`}
-                  style={{ animationDelay: `${i * 75}ms` }}
+                  className="rounded-xl border border-border/50 bg-card hover:border-primary/30 transition"
                 >
                   <div className="p-6 space-y-4">
                     {/* Header */}
                     <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {job.title}
-                          </h3>
-                          {job.featured && (
-                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary">
-                              Featured
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-primary font-semibold mt-1">{job.company}</p>
+                      <div>
+                        <h3 className="text-lg font-semibold">{job.title}</h3>
+                        <p className="text-sm text-primary font-semibold">{job.company}</p>
                       </div>
-                     <Link href={`/jobs/${job.id}`}>
-  <Button className="bg-primary hover:bg-primary/90">
-    View Job
-  </Button>
-</Link>
-
+                      <Link href={`/jobs/${job.id}`}>
+                        <Button>View Job</Button>
+                      </Link>
                     </div>
 
                     {/* Details */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-y border-border/30">
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-4 w-4 text-foreground/60" />
-                        <span className="text-foreground/80">{job.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <DollarSign className="h-4 w-4 text-foreground/60" />
-                        <span className="text-foreground/80">{job.salary}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Briefcase className="h-4 w-4 text-foreground/60" />
-                        <span className="text-foreground/80">{job.job_type}</span>
-
-                      </div>
-                    </div>
-
-                    {/* Skills */}
-                    <div className="flex flex-wrap gap-2">
-                      {job.skills?.map((skill: string, j: number) => (
-                        <span
-                          key={j}
-                          className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold"
-                        >
-                          {skill}
-                        </span>
-                      ))}
+                      {job.location && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <MapPin className="h-4 w-4 text-foreground/60" />
+                          <span>{job.location}</span>
+                        </div>
+                      )}
+                      {job.salary && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <DollarSign className="h-4 w-4 text-foreground/60" />
+                          <span>{job.salary}</span>
+                        </div>
+                      )}
+                      {job.job_type && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Briefcase className="h-4 w-4 text-foreground/60" />
+                          <span>{job.job_type}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -212,40 +181,13 @@ export default function JobsPage() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-border/30 py-16 bg-gradient-to-r from-primary/5 to-primary/5">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl font-bold text-foreground">Get Placed at Top Companies</h2>
-          <p className="text-lg text-foreground/70">
-            Prepare with our courses and get direct referrals to your dream company
-          </p>
-          <Button size="lg" className="gap-2 bg-primary hover:bg-primary/90">
-            Explore Courses
-          </Button>
-        </div>
+      <section className="border-t border-border/30 py-16 text-center">
+        <h2 className="text-3xl font-bold mb-4">Get Placed at Top Companies</h2>
+        <p className="text-lg text-foreground/70 mb-6">
+          Prepare with our courses and get direct referrals
+        </p>
+        <Button size="lg" onClick={() => router.push('/courses')}>Explore Courses</Button>
       </section>
-
-      <style>{`
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slide-up {
-          from { 
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out;
-        }
-        .animate-slide-up {
-          animation: slide-up 0.6s ease-out both;
-        }
-      `}</style>
     </div>
   )
 }
