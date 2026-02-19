@@ -26,30 +26,6 @@ export default function DsaSheetsPage() {
   const supabase = createClient()
   const [dsaSheets, setDsaSheets] = useState<any[]>([])
 
-  // useEffect(() => {
-  //   const fetchTopics = async () => {
-  //     const { data } = await supabase
-  //       .from('dsa_topics')
-  //       .select('*')
-  //       .order('difficulty')
-
-  //     if (!data) return
-
-  //     const mapped = data.map((topic, index) => ({
-  //       id: topic.id,
-  //       title: topic.title,
-  //       difficulty: topic.difficulty,
-  //       problems: topic.problems,
-  //       topics: topic.topics || [],
-  //       color: 'border-border/30',
-  //       textColor: 'text-foreground',
-  //     }))
-
-  //     setDsaSheets(mapped)
-  //   }
-
-  //   fetchTopics()
-  // }, [])
   useEffect(() => {
     const fetchTopics = async () => {
 
@@ -145,11 +121,11 @@ export default function DsaSheetsPage() {
                         </div>
                         <p className="text-sm text-foreground/70">{sheet.problems} problems</p>
                         <div className="flex flex-wrap gap-2">
-                          {sheet.topics.map((topic, j) => (
+                            {sheet.topics.map((topic: string, j: number) => (
                             <span key={j} className="px-2 py-1 rounded bg-foreground/5 text-xs text-foreground/70">
                               {topic}
                             </span>
-                          ))}
+                            ))}
                         </div>
                         <Link href={`/dsa-sheets/${sheet.id}`}>
                           <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-4">
@@ -181,7 +157,7 @@ export default function DsaSheetsPage() {
                         </div>
                         <p className="text-sm text-foreground/70">{sheet.problems} problems</p>
                         <div className="flex flex-wrap gap-2">
-                          {sheet.topics.map((topic, j) => (
+                          {sheet.topics.map((topic: string, j: number) => (
                             <span key={j} className="px-2 py-1 rounded bg-foreground/5 text-xs text-foreground/70">
                               {topic}
                             </span>
@@ -217,7 +193,7 @@ export default function DsaSheetsPage() {
                         </div>
                         <p className="text-sm text-foreground/70">{sheet.problems} problems</p>
                         <div className="flex flex-wrap gap-2">
-                          {sheet.topics.map((topic, j) => (
+                          {sheet.topics.map((topic:string, j:number) => (
                             <span key={j} className="px-2 py-1 rounded bg-foreground/5 text-xs text-foreground/70">
                               {topic}
                             </span>
