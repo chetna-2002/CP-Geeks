@@ -6,7 +6,16 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, BookOpen, Users, Zap, Star, Code2, Briefcase, Award } from 'lucide-react'
 import Link from 'next/link'
 
+/* ADDED */
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/utils/supabase/client'
+
 export default function Home() {
+
+  /* ADDED */
+  const router = useRouter()
+  const supabase = createClient()
+
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set())
 
@@ -30,6 +39,17 @@ export default function Home() {
 
     return () => observer.disconnect()
   }, [])
+
+  /* ADDED: auto redirect if session exists */
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getUser()
+      if (data.user) {
+        router.replace('/dashboard')
+      }
+    }
+    checkSession()
+  }, [router])
 
   const courses = [
     {

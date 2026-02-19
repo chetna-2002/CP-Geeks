@@ -8,16 +8,17 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutGrid },
-  { href: '/admin/courses', label: 'Courses', icon: BookOpen },
-  { href: '/admin/instructors', label: 'Instructors', icon: Users },
-  { href: '/admin/jobs', label: 'Jobs', icon: Briefcase },
-  { href: '/admin/dsa-sheets', label: 'DSA Sheets', icon: Code2 },
-  { href: '/admin/users', label: 'Users', icon: User },
-  { href: '/admin/payments', label: 'Payments', icon: CreditCard },
-  { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard/admin', label: 'Dashboard', icon: LayoutGrid },
+  { href: '/dashboard/admin/courses', label: 'Courses', icon: BookOpen },
+  { href: '/dashboard/admin/instructors', label: 'Instructors', icon: Users },
+  { href: '/dashboard/admin/jobs', label: 'Jobs', icon: Briefcase },
+  { href: '/dashboard/admin/dsa-sheets', label: 'DSA Sheets', icon: Code2 },
+  { href: '/dashboard/admin/users', label: 'Users', icon: User },
+  { href: '/dashboard/admin/payments', label: 'Payments', icon: CreditCard },
+  { href: '/dashboard/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/dashboard/admin/settings', label: 'Settings', icon: Settings },
 ]
+
 
 export function AdminSidebar() {
   const pathname = usePathname()
@@ -53,7 +54,12 @@ export function AdminSidebar() {
           <nav className="flex-1 space-y-2">
             {navItems.map((item) => {
               const Icon = item.icon
-              const isActive = pathname === item.href
+
+              const isActive =
+                item.href === '/dashboard/admin'
+                  ? pathname === '/dashboard/admin'
+                  : pathname.startsWith(item.href)
+
               return (
                 <Link key={item.href} href={item.href}>
                   <Button
@@ -70,15 +76,8 @@ export function AdminSidebar() {
                 </Link>
               )
             })}
-          </nav>
 
-          {/* Footer */}
-          <div className="border-t border-border/30 pt-4 space-y-2">
-            <p className="text-xs text-foreground/50">Version 1.0.0</p>
-            <Button variant="ghost" size="sm" className="w-full justify-start text-foreground/70 hover:text-foreground">
-              Logout
-            </Button>
-          </div>
+          </nav>
         </div>
       </aside>
 

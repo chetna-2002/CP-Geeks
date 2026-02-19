@@ -15,6 +15,7 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+
   useEffect(() => {
     const fetchJobs = async () => {
       const supabase = createClient()
@@ -56,8 +57,10 @@ export default function JobsPage() {
         job.company.toLowerCase().includes(search) ||
         (job.location?.toLowerCase().includes(search) ?? false)
 
-      // Category not yet supported in DB
-      const matchesCategory = selectedCategory === 'all'
+      const matchesCategory =
+        selectedCategory === 'all' ||
+        job.category === selectedCategory
+
 
       return matchesSearch && matchesCategory
     })
@@ -67,7 +70,6 @@ export default function JobsPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/30 py-16">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/15 rounded-full blur-3xl"></div>
@@ -82,7 +84,6 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* Search & Filters */}
       <section className="border-b border-border/30 py-8">
         <div className="mx-auto max-w-7xl px-4 space-y-6">
           <div className="relative">
@@ -114,7 +115,6 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* Jobs List */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">
           {loading ? (
@@ -127,7 +127,6 @@ export default function JobsPage() {
                   className="rounded-xl border border-border/50 bg-card hover:border-primary/30 transition"
                 >
                   <div className="p-6 space-y-4">
-                    {/* Header */}
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <h3 className="text-lg font-semibold">{job.title}</h3>
@@ -138,24 +137,34 @@ export default function JobsPage() {
                       </Link>
                     </div>
 
-                    {/* Details */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-y border-border/30">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 py-4 border-y border-border/30">
                       {job.location && (
                         <div className="flex items-center gap-2 text-sm">
                           <MapPin className="h-4 w-4 text-foreground/60" />
                           <span>{job.location}</span>
                         </div>
                       )}
+
                       {job.salary && (
                         <div className="flex items-center gap-2 text-sm">
                           <DollarSign className="h-4 w-4 text-foreground/60" />
-                          <span>{job.salary}</span>
+                          <span>
+                            ₹{job.salary.split('-')[0]} LPA – ₹{job.salary.split('-')[1]} LPA
+                          </span>
                         </div>
                       )}
+
                       {job.job_type && (
                         <div className="flex items-center gap-2 text-sm">
                           <Briefcase className="h-4 w-4 text-foreground/60" />
                           <span>{job.job_type}</span>
+                        </div>
+                      )}
+
+                      {job.posted_date && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-foreground/60">Posted:</span>
+                          <span>{new Date(job.posted_date).toLocaleDateString()}</span>
                         </div>
                       )}
                     </div>
@@ -180,7 +189,6 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="border-t border-border/30 py-16 text-center">
         <h2 className="text-3xl font-bold mb-4">Get Placed at Top Companies</h2>
         <p className="text-lg text-foreground/70 mb-6">

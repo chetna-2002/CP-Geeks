@@ -10,57 +10,9 @@ import { Navbar } from '@/components/navbar'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
 
-const dsaTopics = [
-  {
-    category: 'Arrays & Hashing',
-    difficulty: 'Beginner',
-    problems: 45,
-    topics: ['Two Pointers', 'Prefix Sum', 'Hash Maps'],
-  },
-  {
-    category: 'Linked Lists',
-    difficulty: 'Beginner',
-    problems: 38,
-    topics: ['Reversal', 'Cycle Detection', 'Merging'],
-  },
-  {
-    category: 'Binary Search',
-    difficulty: 'Intermediate',
-    problems: 35,
-    topics: ['Search Space', 'Boundaries', 'Answer Binary Search'],
-  },
-  {
-    category: 'Stacks & Queues',
-    difficulty: 'Intermediate',
-    problems: 42,
-    topics: ['Monotonic Stack', 'Deque', 'Priority Queue'],
-  },
-  {
-    category: 'Trees & Graphs',
-    difficulty: 'Intermediate',
-    problems: 65,
-    topics: ['DFS', 'BFS', 'LCA', 'Topological Sort'],
-  },
-  {
-    category: 'Dynamic Programming',
-    difficulty: 'Advanced',
-    problems: 85,
-    topics: ['1D DP', '2D DP', 'Digit DP', 'Tree DP'],
-  },
-  {
-    category: 'Greedy Algorithms',
-    difficulty: 'Advanced',
-    problems: 32,
-    topics: ['Activity Selection', 'Huffman Coding', 'Interval Scheduling'],
-  },
-  {
-    category: 'Advanced Data Structures',
-    difficulty: 'Advanced',
-    problems: 55,
-    topics: ['Segment Trees', 'Fenwick Trees', 'Tries', 'Disjoint Set'],
-  },
-]
 
 const stats = [
   { value: '400+', label: 'Problems' },
@@ -69,17 +21,72 @@ const stats = [
   { value: '20+', label: 'Mock Interviews' },
 ]
 
-const dsaSheets = dsaTopics.map((topic, index) => ({
-  id: index + 1,
-  title: topic.category,
-  difficulty: topic.difficulty,
-  problems: topic.problems,
-  topics: topic.topics,
-  color: 'border-border/30',
-  textColor: 'text-foreground',
-}));
-
 export default function DsaSheetsPage() {
+
+  const supabase = createClient()
+  const [dsaSheets, setDsaSheets] = useState<any[]>([])
+
+  // useEffect(() => {
+  //   const fetchTopics = async () => {
+  //     const { data } = await supabase
+  //       .from('dsa_topics')
+  //       .select('*')
+  //       .order('difficulty')
+
+  //     if (!data) return
+
+  //     const mapped = data.map((topic, index) => ({
+  //       id: topic.id,
+  //       title: topic.title,
+  //       difficulty: topic.difficulty,
+  //       problems: topic.problems,
+  //       topics: topic.topics || [],
+  //       color: 'border-border/30',
+  //       textColor: 'text-foreground',
+  //     }))
+
+  //     setDsaSheets(mapped)
+  //   }
+
+  //   fetchTopics()
+  // }, [])
+  useEffect(() => {
+    const fetchTopics = async () => {
+
+      const { data: topics } = await supabase
+        .from('dsa_topics')
+        .select('*')
+        .order('difficulty')
+
+      if (!topics) return
+
+      const mapped = await Promise.all(
+        topics.map(async (topic) => {
+
+          const { count } = await supabase
+            .from('dsa_problems')
+            .select('*', { count: 'exact', head: true })
+            .eq('topic_id', topic.id)
+
+          return {
+            id: topic.id,
+            title: topic.title,
+            difficulty: topic.difficulty,
+            problems: count || 0,
+            topics: topic.topics || [],
+            color: 'border-border/30',
+            textColor: 'text-foreground',
+          }
+        })
+      )
+
+      setDsaSheets(mapped)
+    }
+
+    fetchTopics()
+  }, [])
+
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -144,9 +151,11 @@ export default function DsaSheetsPage() {
                             </span>
                           ))}
                         </div>
-                        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-4">
-                          Start Learning
-                        </Button>
+                        <Link href={`/dsa-sheets/${sheet.id}`}>
+                          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-4">
+                            Start Learning
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   ))}
@@ -178,9 +187,11 @@ export default function DsaSheetsPage() {
                             </span>
                           ))}
                         </div>
-                        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-4">
-                          Start Learning
-                        </Button>
+                        <Link href={`/dsa-sheets/${sheet.id}`}>
+                          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-4">
+                            Start Learning
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   ))}
@@ -212,9 +223,11 @@ export default function DsaSheetsPage() {
                             </span>
                           ))}
                         </div>
-                        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-4">
-                          Start Learning
-                        </Button>
+                        <Link href={`/dsa-sheets/${sheet.id}`}>
+                          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-4">
+                            Start Learning
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   ))}

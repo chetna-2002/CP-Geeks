@@ -1,7 +1,7 @@
 "use client";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,33 +29,33 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      console.log("login page ka hu : ", data.user);
+
       if (error) {
         alert(error.message);
-        console.log("error in login : ", error);
         return;
       }
 
-      console.log("Logged in user:", data.user);
+      const userId = authData.user?.id;
+      if (!userId) return;
 
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
+        .eq("id", userId)
         .single();
 
-      console.log("User role is : ", profile?.role);
-
-      // Redirect based on role
-      if (profile?.role === "admin") {
-        router.push("/dashboard/admin");
+      if (profile?.role?.toLowerCase() === "admin") {
+        router.replace("/dashboard/admin");
       } else {
-        router.push("/dashboard/user");
+        router.replace("/dashboard/user");
       }
+
     } catch (err) {
       console.error(err);
       alert("Something went wrong");
@@ -63,6 +63,8 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+
   const handleForgotPassword = async () => {
     if (!email) {
       alert("Please enter your email first");

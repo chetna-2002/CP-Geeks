@@ -23,31 +23,30 @@ export function AdminHeader() {
 
   useEffect(() => {
     setMounted(true);
+    fetchUser();
   }, []);
+
+  const fetchUser = async () => {
+    const { data } = await supabase.auth.getUser();
+    setUser(data.user);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null);
-    router.push("/login");
+    router.replace("/login");
   };
+
   return (
     <header className="sticky top-0 z-20 border-b border-border/30 bg-background/95 backdrop-blur">
       <div className="flex h-16 items-center justify-between px-6">
         <div className="flex-1" />
 
-        {/* Right Side Actions */}
         <div className="flex items-center gap-4">
-          {/* Notifications */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative hover:bg-primary/10"
-          >
+          <Button variant="ghost" size="icon" className="relative hover:bg-primary/10">
             <Bell className="h-5 w-5" />
             <span className="absolute top-1 right-1 h-2 w-2 bg-primary rounded-full" />
           </Button>
 
-          {/* Theme Toggle */}
           {mounted && (
             <Button
               variant="ghost"
@@ -63,33 +62,35 @@ export function AdminHeader() {
             </Button>
           )}
 
-          {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-primary/10"
-              >
+              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
                 <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                  AD
+                  {user?.email?.[0]?.toUpperCase() || "A"}
                 </div>
               </Button>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent align="end" className="w-56">
               <div className="px-2 py-1.5 text-sm">
-                <p className="font-semibold">Admin User</p>
-                <p className="text-xs text-foreground/60">admin@cpgeeks.com</p>
+                <p className="font-semibold">{user?.user_metadata?.full_name || "Admin"}</p>
+                <p className="text-xs text-foreground/60">{user?.email}</p>
               </div>
+
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer gap-2">
+
+              <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => router.push("/dashboard/admin/profile")}>
                 <User className="h-4 w-4" />
                 Profile
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-               <Button onClick={()=>handleLogout ()}>Logout</Button> 
+
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer text-destructive focus:text-destructive"
+              >
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

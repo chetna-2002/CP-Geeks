@@ -1,160 +1,469 @@
+// 'use client'
+
+// import { useState, useEffect } from 'react'
+// import { createClient } from '@/utils/supabase/client'
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+// import { Button } from '@/components/ui/button'
+// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+// import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+// import { Input } from '@/components/ui/input'
+// import { Label } from '@/components/ui/label'
+// import { Textarea } from '@/components/ui/textarea'
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+// import { Plus, Edit2, Trash2, Search } from 'lucide-react'
+
+// export default function CoursesPage() {
+
+//   const supabase = createClient()
+
+//   const [courses, setCourses] = useState<any[]>([])
+//   const [instructors, setInstructors] = useState<any[]>([])
+//   const [searchTerm, setSearchTerm] = useState('')
+//   const [isOpen, setIsOpen] = useState(false)
+//   const [editingId, setEditingId] = useState<string | null>(null)
+
+//   const [title, setTitle] = useState('')
+//   const [description, setDescription] = useState('')
+//   const [instructor, setInstructor] = useState('')
+//   const [price, setPrice] = useState('')
+
+//   useEffect(() => {
+//     fetchCourses()
+//     fetchInstructors()
+//   }, [])
+
+//   const fetchCourses = async () => {
+//     const { data } = await supabase
+//       .from('courses')
+//       .select('*, instructors(name)')
+//       .order('created_at', { ascending: false })
+
+//     setCourses(data || [])
+//   }
+
+//   const fetchInstructors = async () => {
+//     const { data } = await supabase.from('instructors').select('*')
+//     setInstructors(data || [])
+//     console.log('Instructors:', data)
+//   }
+
+//   const handleSaveCourse = async () => {
+
+//     const payload = {
+//       title,
+//       description,
+//       instructor_id: instructor,
+//       price: Number(price)
+//     }
+
+//     if (editingId) {
+//       await supabase.from('courses').update(payload).eq('id', editingId)
+//     } else {
+//       await supabase.from('courses').insert(payload)
+//     }
+
+//     resetForm()
+//     setIsOpen(false)
+//     fetchCourses()
+//   }
+
+//   const handleDelete = async (id: string) => {
+//     await supabase.from('courses').delete().eq('id', id)
+//     fetchCourses()
+//   }
+
+//   const resetForm = () => {
+//     setEditingId(null)
+//     setTitle('')
+//     setDescription('')
+//     setInstructor('')
+//     setPrice('')
+//   }
+
+//   const filteredCourses = courses.filter(c =>
+//     c.title?.toLowerCase().includes(searchTerm.toLowerCase())
+//   )
+
+//   return (
+//     <div className="flex-1 space-y-8 p-8">
+
+//       <div className="flex items-center justify-between">
+//         <div>
+//           <h1 className="text-3xl font-bold">Courses</h1>
+//           <p className="text-sm text-muted-foreground">Manage all courses</p>
+//         </div>
+
+//         <Dialog open={isOpen} onOpenChange={setIsOpen}>
+//           <DialogTrigger asChild>
+//             <Button className="gap-2" onClick={resetForm}>
+//               <Plus className="h-4 w-4" />
+//               Add Course
+//             </Button>
+//           </DialogTrigger>
+
+//           <DialogContent className="max-w-2xl">
+//             <DialogHeader>
+//               <DialogTitle>{editingId ? 'Edit Course' : 'Add Course'}</DialogTitle>
+//               <DialogDescription>Course details</DialogDescription>
+//             </DialogHeader>
+
+//             <div className="space-y-4">
+
+//               <div className="space-y-2">
+//                 <Label>Course Title</Label>
+//                 <Input value={title} onChange={e => setTitle(e.target.value)} />
+//               </div>
+
+//               <div className="space-y-2">
+//                 <Label>Description</Label>
+//                 <Textarea value={description} onChange={e => setDescription(e.target.value)} />
+//               </div>
+
+//               <div className="space-y-2">
+//                 <Label>Instructor</Label>
+//                 <Select
+//                   value={instructor ? String(instructor) : undefined}
+//                   onValueChange={(v) => setInstructor(v)}
+//                 >
+//                   <SelectTrigger>
+//                     <SelectValue placeholder="Select instructor" />
+//                   </SelectTrigger>
+
+//                   <SelectContent>
+//                     {instructors.map((i) => (
+//                       <SelectItem key={i.id} value={String(i.id)}>
+//                         {i.name}
+//                       </SelectItem>
+//                     ))}
+//                   </SelectContent>
+//                 </Select>
+//               </div>
+
+//               <div className="space-y-2">
+//                 <Label>Price</Label>
+//                 <Input type="number" value={price} onChange={e => setPrice(e.target.value)} />
+//               </div>
+
+//               <div className="flex justify-end gap-3">
+//                 <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
+//                 <Button onClick={handleSaveCourse}>
+//                   {editingId ? 'Update Course' : 'Create Course'}
+//                 </Button>
+//               </div>
+
+//             </div>
+//           </DialogContent>
+//         </Dialog>
+//       </div>
+
+//       <div className="relative">
+//         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
+//         <Input className="pl-10" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+//       </div>
+
+//       <Card>
+//         <CardHeader>
+//           <CardTitle>All Courses</CardTitle>
+//           <CardDescription>Total: {filteredCourses.length}</CardDescription>
+//         </CardHeader>
+
+//         <CardContent>
+//           <Table>
+//             <TableHeader>
+//               <TableRow>
+//                 <TableHead>Course</TableHead>
+//                 <TableHead>Instructor</TableHead>
+//                 <TableHead>Price</TableHead>
+//                 <TableHead className="text-right">Actions</TableHead>
+//               </TableRow>
+//             </TableHeader>
+
+//             <TableBody>
+//               {filteredCourses.map(course => (
+//                 <TableRow key={course.id}>
+//                   <TableCell>{course.title}</TableCell>
+//                   <TableCell>{course.instructors?.name}</TableCell>
+//                   <TableCell>{course.price}</TableCell>
+
+//                   <TableCell className="text-right flex justify-end gap-2">
+
+//                     <Button variant="ghost" size="icon"
+//                       onClick={() => {
+//                         setEditingId(course.id)
+//                         setTitle(course.title)
+//                         setDescription(course.description)
+//                         setInstructor(course.instructor_id ? String(course.instructor_id) : '')
+//                         setPrice(String(course.price))
+//                         setIsOpen(true)
+//                       }}>
+//                       <Edit2 className="h-4 w-4" />
+//                     </Button>
+
+//                     <AlertDialog>
+//                       <AlertDialogTrigger asChild>
+//                         <Button variant="ghost" size="icon">
+//                           <Trash2 className="h-4 w-4" />
+//                         </Button>
+//                       </AlertDialogTrigger>
+
+//                       <AlertDialogContent>
+//                         <AlertDialogHeader>
+//                           <AlertDialogTitle>Delete course?</AlertDialogTitle>
+//                           <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+//                         </AlertDialogHeader>
+
+//                         <AlertDialogFooter>
+//                           <AlertDialogCancel>Cancel</AlertDialogCancel>
+//                           <AlertDialogAction onClick={() => handleDelete(course.id)}>
+//                             Delete
+//                           </AlertDialogAction>
+//                         </AlertDialogFooter>
+//                       </AlertDialogContent>
+//                     </AlertDialog>
+
+//                   </TableCell>
+//                 </TableRow>
+//               ))}
+//             </TableBody>
+
+//           </Table>
+//         </CardContent>
+//       </Card>
+//     </div>
+//   )
+// }
+
+
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Plus, Edit2, Trash2, Search } from 'lucide-react'
 
-const courses = [
-  { id: 1, name: 'Advanced DSA', instructor: 'Sandeep Jain', price: '$99', status: 'Published', students: 234 },
-  { id: 2, name: 'System Design', instructor: 'Harkirat Singh', price: '$149', status: 'Published', students: 189 },
-  { id: 3, name: 'React Mastery', instructor: 'Akshay Saini', price: '$79', status: 'Draft', students: 0 },
-  { id: 4, name: 'Node.js Deep Dive', instructor: 'Priya Sharma', price: '$89', status: 'Published', students: 145 },
-  { id: 5, name: 'Web Performance', instructor: 'Harkirat Singh', price: '$69', status: 'Published', students: 78 },
-]
-
 export default function CoursesPage() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredCourses = courses.filter(course =>
-    course.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const supabase = createClient()
+
+  const [courses, setCourses] = useState<any[]>([])
+  const [instructors, setInstructors] = useState<any[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [instructor, setInstructor] = useState<string>('')
+  const [price, setPrice] = useState('')
+
+  useEffect(() => {
+    fetchCourses()
+    fetchInstructors()
+  }, [])
+
+  const fetchCourses = async () => {
+    const { data } = await supabase
+      .from('courses')
+      .select('*, instructors(name)')
+      .order('created_at', { ascending: false })
+
+    setCourses(data || [])
+  }
+
+  const fetchInstructors = async () => {
+    const { data } = await supabase.from('instructors').select('*')
+    setInstructors(data || [])
+  }
+
+  const handleSaveCourse = async () => {
+
+    const payload = {
+      title,
+      description,
+      instructor_id: instructor,
+      price: Number(price)
+    }
+
+    if (editingId) {
+      await supabase.from('courses').update(payload).eq('id', editingId)
+    } else {
+      await supabase.from('courses').insert(payload)
+    }
+
+    resetForm()
+    setIsOpen(false)
+    fetchCourses()
+  }
+
+  const handleDelete = async (id: string) => {
+    await supabase.from('courses').delete().eq('id', id)
+    fetchCourses()
+  }
+
+  const resetForm = () => {
+    setEditingId(null)
+    setTitle('')
+    setDescription('')
+    setInstructor('')
+    setPrice('')
+  }
+
+  const filteredCourses = courses.filter(c =>
+    c.title?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
     <div className="flex-1 space-y-8 p-8">
-      {/* Header */}
+
       <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-foreground">Courses</h1>
-          <p className="text-sm text-foreground/60">Manage all courses on the platform</p>
+        <div>
+          <h1 className="text-3xl font-bold">Courses</h1>
+          <p className="text-sm text-muted-foreground">Manage all courses</p>
         </div>
+
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2 bg-primary hover:bg-primary/90">
+            <Button className="gap-2" onClick={resetForm}>
               <Plus className="h-4 w-4" />
               Add Course
             </Button>
           </DialogTrigger>
+
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Add New Course</DialogTitle>
-              <DialogDescription>Create a new course for your platform</DialogDescription>
+              <DialogTitle>{editingId ? 'Edit Course' : 'Add Course'}</DialogTitle>
+              <DialogDescription>Course details</DialogDescription>
             </DialogHeader>
+
             <div className="space-y-4">
+
               <div className="space-y-2">
                 <Label>Course Title</Label>
-                <Input placeholder="e.g., Advanced React Patterns" />
+                <Input value={title} onChange={e => setTitle(e.target.value)} />
               </div>
+
               <div className="space-y-2">
                 <Label>Description</Label>
-                <Textarea placeholder="Course description..." rows={4} />
+                <Textarea value={description} onChange={e => setDescription(e.target.value)} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Instructor</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select instructor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="harkirat">Harkirat Singh</SelectItem>
-                      <SelectItem value="sandeep">Sandeep Jain</SelectItem>
-                      <SelectItem value="akshay">Akshay Saini</SelectItem>
-                      <SelectItem value="priya">Priya Sharma</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Price</Label>
-                  <Input placeholder="$99" type="number" />
-                </div>
-              </div>
+
               <div className="space-y-2">
-                <Label>Status</Label>
-                <Select>
+                <Label>Instructor</Label>
+                <Select
+                  value={instructor || undefined}
+                  onValueChange={(v) => setInstructor(v)}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Select instructor" />
                   </SelectTrigger>
+
                   <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
+                    {instructors.map((i) => (
+                      <SelectItem key={i.id} value={i.id}>
+                        {i.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex gap-3 justify-end">
-                <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button className="bg-primary hover:bg-primary/90" onClick={() => setIsOpen(false)}>Create Course</Button>
+
+              <div className="space-y-2">
+                <Label>Price</Label>
+                <Input type="number" value={price} onChange={e => setPrice(e.target.value)} />
               </div>
+
+              <div className="flex justify-end gap-3">
+                <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
+                <Button onClick={handleSaveCourse}>
+                  {editingId ? 'Update Course' : 'Create Course'}
+                </Button>
+              </div>
+
             </div>
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/50" />
-        <Input
-          placeholder="Search courses..."
-          className="pl-10"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
+        <Input className="pl-10" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
 
-      {/* Courses Table */}
-      <Card className="border-border/30">
+      <Card>
         <CardHeader>
           <CardTitle>All Courses</CardTitle>
-          <CardDescription>Total: {filteredCourses.length} courses</CardDescription>
+          <CardDescription>Total: {filteredCourses.length}</CardDescription>
         </CardHeader>
+
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-border/30">
-                  <TableHead>Course Name</TableHead>
-                  <TableHead>Instructor</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Students</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCourses.map((course) => (
-                  <TableRow key={course.id} className="border-border/30 hover:bg-primary/5">
-                    <TableCell className="font-medium text-foreground">{course.name}</TableCell>
-                    <TableCell className="text-foreground/70">{course.instructor}</TableCell>
-                    <TableCell className="font-semibold text-foreground">{course.price}</TableCell>
-                    <TableCell className="text-foreground/70">{course.students}</TableCell>
-                    <TableCell>
-                      <Badge className={course.status === 'Published' ? 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30' : 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/30'} variant="outline">
-                        {course.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/10">
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-red-500/10 text-destructive hover:text-destructive">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Course</TableHead>
+                <TableHead>Instructor</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {filteredCourses.map(course => (
+                <TableRow key={course.id}>
+                  <TableCell>{course.title}</TableCell>
+                  <TableCell>{course.instructors?.name}</TableCell>
+                  <TableCell>{course.price}</TableCell>
+
+                  <TableCell className="text-right flex justify-end gap-2">
+
+                    <Button variant="ghost" size="icon"
+                      onClick={() => {
+                        setEditingId(course.id)
+                        setTitle(course.title)
+                        setDescription(course.description)
+                        setInstructor(course.instructor_id || '')
+                        setPrice(String(course.price))
+                        setIsOpen(true)
+                      }}>
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
                           <Trash2 className="h-4 w-4" />
                         </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                      </AlertDialogTrigger>
+
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete course?</AlertDialogTitle>
+                          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(course.id)}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+
+          </Table>
         </CardContent>
       </Card>
     </div>
