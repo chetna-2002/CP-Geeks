@@ -5,7 +5,18 @@ import { Button } from '@/components/ui/button'
 import { Star } from 'lucide-react'
 
 export default function InstructorsPage() {
-  const instructors = [
+  interface Instructor {
+    id: number
+    name: string
+    role: string
+    bio: string
+    description: string
+    rating: number
+    students: number
+    expertise: string[]
+  }
+
+  const instructors: Instructor[] = [
     // {
     //   id: 1,
     //   name: 'Harkirat Singh',
