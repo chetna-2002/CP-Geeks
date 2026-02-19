@@ -6,46 +6,16 @@ import { Star } from 'lucide-react'
 
 export default function InstructorsPage() {
   const instructors = [
-    {
-      id: 1,
-      name: 'Harkirat Singh',
-      role: 'Lead Instructor',
-      bio: 'Ex-Google, Ex-Goldman Sachs',
-      description: 'Open source contributor and full stack expert. I bridge the gap between theory and production-grade code.',
-      rating: 4.9,
-      students: 12500,
-      expertise: ['Full Stack', 'System Design', 'Open Source'],
-    },
-    {
-      id: 2,
-      name: 'Sandeep Jain',
-      role: 'DSA Mentor',
-      bio: 'Ex-Amazon, IIT Roorkee',
-      description: 'Competitive programmer and algorithm wizard. I make complex DP problems feel like grade school math.',
-      rating: 4.95,
-      students: 8300,
-      expertise: ['DSA', 'Competitive Programming', 'Algorithms'],
-    },
-    {
-      id: 3,
-      name: 'Akshay Saini',
-      role: 'Frontend Architect',
-      bio: 'Ex-Uber, Namaste JS',
-      description: 'Javascript enthusiast. I teach specific deep dives into core web technologies and performance.',
-      rating: 4.85,
-      students: 6200,
-      expertise: ['JavaScript', 'React', 'Web Performance'],
-    },
-    {
-      id: 4,
-      name: 'Priya Sharma',
-      role: 'Cloud Architect',
-      bio: 'Ex-AWS, Cloud Expert',
-      description: 'Cloud infrastructure specialist with expertise in AWS and Kubernetes. I help engineers build scalable systems.',
-      rating: 4.88,
-      students: 5500,
-      expertise: ['AWS', 'DevOps', 'Kubernetes'],
-    },
+    // {
+    //   id: 1,
+    //   name: 'Harkirat Singh',
+    //   role: 'Lead Instructor',
+    //   bio: 'Ex-Google, Ex-Goldman Sachs',
+    //   description: 'Open source contributor and full stack expert. I bridge the gap between theory and production-grade code.',
+    //   rating: 4.9,
+    //   students: 12500,
+    //   expertise: ['Full Stack', 'System Design', 'Open Source'],
+    // },
   ]
 
   return (
