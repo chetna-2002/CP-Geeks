@@ -51,67 +51,88 @@ export default function Home() {
     checkSession()
   }, [router])
 
-  const courses = [
-    {
-      id: 1,
-      title: 'DSA & GenAI Masterclass',
-      description: 'Crack top tiers like Google & Amazon. Complete DSA (C++, Java, Python) integrated with Generative AI patterns.',
-      instructor: 'Sandeep Jain',
-      students: 8300,
-      duration: '4 months',
-      price: '₹6,999',
-      badge: 'FAANG Ready',
-      features: ['Live Mentorship', 'Mock Interviews', 'Placement Support'],
-    },
-    {
-      id: 2,
-      title: 'Full Stack Innovation',
-      description: 'Beyond the basics. React 19, Next.js 14, Server Actions, and building scalable microservices from scratch.',
-      instructor: 'Akshay Saini',
-      students: 6200,
-      duration: '3 months',
-      price: '₹5,499',
-      badge: 'Project Heavy',
-      features: ['Real-time Projects', 'Code Reviews', 'Architecture Labs'],
-    },
-    {
-      id: 3,
-      title: 'System Design Architect',
-      description: 'Scale from 1 to 100 million users. Learn real patterns used by Uber, Airbnb, and WhatsApp engineers.',
-      instructor: 'Harkirat Singh',
-      students: 5800,
-      duration: '3 months',
-      price: '₹4,999',
-      badge: 'L5+ Level',
-      features: ['Scale 0 to 1M', 'Distributed Systems', 'Cloud Native'],
-    },
+  interface Course {
+    id: number
+    title: string
+    description: string
+    instructor: string
+    students: number
+    duration: string
+    price: string
+    badge: string
+    features: string[]
+  }
+
+  const courses: Course[] = [
+    // {
+    //   id: 1,
+    //   title: 'DSA & GenAI Masterclass',
+    //   description: 'Crack top tiers like Google & Amazon. Complete DSA (C++, Java, Python) integrated with Generative AI patterns.',
+    //   instructor: 'Sandeep Jain',
+    //   students: 8300,
+    //   duration: '4 months',
+    //   price: '₹6,999',
+    //   badge: 'FAANG Ready',
+    //   features: ['Live Mentorship', 'Mock Interviews', 'Placement Support'],
+    // },
+    // {
+    //   id: 2,
+    //   title: 'Full Stack Innovation',
+    //   description: 'Beyond the basics. React 19, Next.js 14, Server Actions, and building scalable microservices from scratch.',
+    //   instructor: 'Akshay Saini',
+    //   students: 6200,
+    //   duration: '3 months',
+    //   price: '₹5,499',
+    //   badge: 'Project Heavy',
+    //   features: ['Real-time Projects', 'Code Reviews', 'Architecture Labs'],
+    // },
+    // {
+    //   id: 3,
+    //   title: 'System Design Architect',
+    //   description: 'Scale from 1 to 100 million users. Learn real patterns used by Uber, Airbnb, and WhatsApp engineers.',
+    //   instructor: 'Harkirat Singh',
+    //   students: 5800,
+    //   duration: '3 months',
+    //   price: '₹4,999',
+    //   badge: 'L5+ Level',
+    //   features: ['Scale 0 to 1M', 'Distributed Systems', 'Cloud Native'],
+    // },
   ]
 
-  const instructors = [
-    {
-      name: 'Harkirat Singh',
-      role: 'Lead Instructor',
-      bio: 'Ex-Google, Ex-Goldman Sachs',
-      description: 'Open source contributor and full stack expert.',
-      rating: 4.9,
-      students: 12500,
-    },
-    {
-      name: 'Sandeep Jain',
-      role: 'DSA Mentor',
-      bio: 'Ex-Amazon, IIT Roorkee',
-      description: 'Competitive programmer and algorithm wizard.',
-      rating: 4.95,
-      students: 8300,
-    },
-    {
-      name: 'Akshay Saini',
-      role: 'Frontend Architect',
-      bio: 'Ex-Uber, Namaste JS',
-      description: 'Javascript enthusiast teaching web technologies.',
-      rating: 4.85,
-      students: 6200,
-    },
+  interface Instructor {
+    name: string
+    role: string
+    bio: string
+    description: string
+    rating: number
+    students: number
+  }
+
+  const instructors: Instructor[] = [
+    // {
+    //   name: 'Harkirat Singh',
+    //   role: 'Lead Instructor',
+    //   bio: 'Ex-Google, Ex-Goldman Sachs',
+    //   description: 'Open source contributor and full stack expert.',
+    //   rating: 4.9,
+    //   students: 12500,
+    // },
+    // {
+    //   name: 'Sandeep Jain',
+    //   role: 'DSA Mentor',
+    //   bio: 'Ex-Amazon, IIT Roorkee',
+    //   description: 'Competitive programmer and algorithm wizard.',
+    //   rating: 4.95,
+    //   students: 8300,
+    // },
+    // {
+    //   name: 'Akshay Saini',
+    //   role: 'Frontend Architect',
+    //   bio: 'Ex-Uber, Namaste JS',
+    //   description: 'Javascript enthusiast teaching web technologies.',
+    //   rating: 4.85,
+    //   students: 6200,
+    // },
   ]
 
   const features = [
@@ -190,9 +211,7 @@ export default function Home() {
                   Start Learning <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="hover:scale-105 transition-transform bg-transparent">
-                Watch Demo
-              </Button>
+              
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-8 border-t border-border/30">
@@ -467,11 +486,11 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-border/30 pt-8 flex items-center justify-between">
-            <p className="text-sm text-foreground/50">© 2024 CP Geeks. All rights reserved.</p>
+            <p className="text-sm text-foreground/50">© {new Date().getFullYear()} CP Geeks. All rights reserved.</p>
             <div className="flex gap-4">
-              <a href="#" className="text-foreground/50 hover:text-foreground transition-colors">Twitter</a>
-              <a href="#" className="text-foreground/50 hover:text-foreground transition-colors">GitHub</a>
-              <a href="#" className="text-foreground/50 hover:text-foreground transition-colors">LinkedIn</a>
+              {/* <a href="#" className="text-foreground/50 hover:text-foreground transition-colors">Twitter</a>
+              <a href="#" className="text-foreground/50 hover:text-foreground transition-colors">GitHub</a> */}
+              <a href="https://www.linkedin.com/company/cp-geeks" className="text-foreground/50 hover:text-foreground transition-colors">LinkedIn</a>
             </div>
           </div>
         </div>
