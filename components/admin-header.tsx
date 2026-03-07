@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
-import { Moon, Sun, Bell, User } from "lucide-react";
+import { Moon, Sun, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -42,10 +42,6 @@ export function AdminHeader() {
         <div className="flex-1" />
 
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="relative hover:bg-primary/10">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1 right-1 h-2 w-2 bg-primary rounded-full" />
-          </Button>
 
           {mounted && (
             <Button

@@ -3,20 +3,20 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { Menu, X, LayoutGrid, BookOpen, Users, Briefcase, Code2, User, CreditCard, BarChart3, Settings } from 'lucide-react'
+import { Menu, X, LayoutGrid, BookOpen, Users, Briefcase, Code2, User, CreditCard, BarChart3, Settings, User2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard/admin', label: 'Dashboard', icon: LayoutGrid },
   { href: '/dashboard/admin/courses', label: 'Courses', icon: BookOpen },
+  { href: '/dashboard/admin/placements', label: 'Placements', icon: User2Icon },
   { href: '/dashboard/admin/instructors', label: 'Instructors', icon: Users },
   { href: '/dashboard/admin/jobs', label: 'Jobs', icon: Briefcase },
   { href: '/dashboard/admin/dsa-sheets', label: 'DSA Sheets', icon: Code2 },
   { href: '/dashboard/admin/users', label: 'Users', icon: User },
   { href: '/dashboard/admin/payments', label: 'Payments', icon: CreditCard },
-  { href: '/dashboard/admin/analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '/dashboard/admin/settings', label: 'Settings', icon: Settings },
+  // { href: '/dashboard/admin/settings', label: 'Settings', icon: Settings },
 ]
 
 
