@@ -3,31 +3,30 @@
 import { Navbar } from '@/components/navbar'
 import { Button } from '@/components/ui/button'
 import { Star } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { createClient } from "@/utils/supabase/client";
 
 export default function InstructorsPage() {
-  interface Instructor {
-    id: number
-    name: string
-    role: string
-    bio: string
-    description: string
-    rating: number
-    students: number
-    expertise: string[]
-  }
 
-  const instructors: Instructor[] = [
-    // {
-    //   id: 1,
-    //   name: 'Harkirat Singh',
-    //   role: 'Lead Instructor',
-    //   bio: 'Ex-Google, Ex-Goldman Sachs',
-    //   description: 'Open source contributor and full stack expert. I bridge the gap between theory and production-grade code.',
-    //   rating: 4.9,
-    //   students: 12500,
-    //   expertise: ['Full Stack', 'System Design', 'Open Source'],
-    // },
-  ]
+  const [instructors, setInstructors] = useState<any[]>([])
+  const supabase = createClient();
+  useEffect(() => {
+    const loadInstructors = async () => {
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      console.log("INSTRUCTORS DATA:", data);
+      console.log("INSTRUCTORS ERROR:", error);
+
+      if (!error && data) {
+        setInstructors(data);
+      }
+    };
+
+    loadInstructors();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,52 +56,73 @@ export default function InstructorsPage() {
             {instructors.map((instructor, i) => (
               <div
                 key={instructor.id}
-                className="group rounded-xl border border-border/50 overflow-hidden hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-card animate-slide-up"
+                className="group rounded-xl border border-border/50 overflow-hidden hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-card animate-slide-up flex flex-col"
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <div className="p-8 space-y-6">
+                <div className="p-8 space-y-6 flex flex-col h-full">
+
                   {/* Header */}
                   <div className="flex items-start gap-4">
-                    <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-primary/50 group-hover:from-primary/90 group-hover:to-primary/70 transition-all"></div>
+                    <img
+                      src={instructor.image_url}
+                      alt={instructor.name}
+                      className="h-16 w-16 rounded-full object-cover"
+                    />
+
                     <div>
-                      <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">{instructor.name}</h3>
-                      <p className="text-sm text-primary font-semibold">{instructor.role}</p>
-                      <p className="text-xs text-foreground/60 mt-1">{instructor.bio}</p>
+                      <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                        {instructor.name}
+                      </h3>
+
+                      <p className="text-sm text-primary font-semibold">
+                        {instructor.role}
+                      </p>
+
+                      <p className="text-xs text-foreground/60 mt-1">
+                        {instructor.bio}
+                      </p>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className="text-foreground/80 leading-relaxed">{instructor.description}</p>
-
-                  {/* Expertise Tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {instructor.expertise.map((skill, j) => (
-                      <span key={j} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
+                  <p className="text-foreground/80 leading-relaxed line-clamp-3">
+                    {instructor.description}
+                  </p>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/30">
-                    <div>
-                      <div className="flex items-center gap-1 mb-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/30 mt-auto">
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, j) => (
+                          <Star
+                            key={j}
+                            className={`h-4 w-4 ${j < Math.round(instructor.rating)
+                                ? "fill-yellow-500 text-yellow-500"
+                                : "text-gray-300"
+                              }`}
+                          />
                         ))}
                       </div>
-                      <p className="text-sm font-semibold text-foreground">{instructor.rating} Rating</p>
+
+                      <span className="text-sm font-semibold text-foreground">
+                        {instructor.rating}.0
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">{instructor.students.toLocaleString()}</p>
-                      <p className="text-xs text-foreground/60">Students Taught</p>
+
+                    {/* Students */}
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-foreground">
+                        {instructor.students.toLocaleString()}+
+                      </p>
+                      <p className="text-xs text-foreground/60">
+                        Students
+                      </p>
                     </div>
+
                   </div>
 
-                  {/* CTA */}
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-                    View Courses
-                  </Button>
                 </div>
               </div>
             ))}
