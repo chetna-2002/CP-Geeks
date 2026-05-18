@@ -650,15 +650,13 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/30 px-4 py-12 sm:px-6 lg:px-8 bg-foreground/2">
+      {/* <footer className="border-t border-border/30 px-4 py-12 sm:px-6 lg:px-8 bg-foreground/2">
         <div className="mx-auto max-w-7xl">
           <div className="border-t border-border/30 pt-8 flex items-center justify-between">
             <p className="text-sm text-foreground/50">
               © {new Date().getFullYear()} CP Geeks. All rights reserved.
             </p>
             <div className="flex gap-4">
-              {/* <a href="#" className="text-foreground/50 hover:text-foreground transition-colors">Twitter</a>
-              <a href="#" className="text-foreground/50 hover:text-foreground transition-colors">GitHub</a> */}
               <a
                 href="https://www.linkedin.com/company/cp-geeks"
                 className="text-foreground/50 hover:text-foreground transition-colors"
@@ -668,7 +666,149 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </footer>
+      </footer> */}
+      <footer className="border-t border-border/30 px-4 py-12 sm:px-6 lg:px-8 bg-foreground/2">
+  <div className="mx-auto max-w-7xl">
+    
+    {/* Top Footer */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-border/30">
+      
+      {/* Brand */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-black font-bold">
+            CG
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">
+              CP Geeks
+            </h3>
+            <p className="text-sm text-foreground/60">
+              Build the Future of Tech
+            </p>
+          </div>
+        </div>
+
+        <p className="text-sm text-foreground/60 max-w-sm leading-relaxed">
+          CP Geeks is a modern learning platform focused on DSA,
+          System Design, Full Stack Development, and interview preparation
+          for aspiring software engineers.
+        </p>
+      </div>
+
+      {/* Quick Links */}
+      <div>
+        <h4 className="text-sm font-semibold text-foreground mb-4">
+          Quick Links
+        </h4>
+
+        <div className="flex flex-col gap-3 text-sm">
+          <Link
+            href="/courses"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            Courses
+          </Link>
+
+          <Link
+            href="/instructors"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            Instructors
+          </Link>
+
+          <Link
+            href="/jobs"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            Jobs
+          </Link>
+
+          <Link
+            href="/dsa-sheets"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            DSA Sheets
+          </Link>
+        </div>
+      </div>
+
+      {/* Legal */}
+      <div>
+        <h4 className="text-sm font-semibold text-foreground mb-4">
+          Legal
+        </h4>
+
+        <div className="flex flex-col gap-3 text-sm">
+          <Link
+            href="/terms"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            Terms & Conditions
+          </Link>
+
+          <Link
+            href="/privacy-policy"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            Privacy Policy
+          </Link>
+
+          <Link
+            href="/refund-policy"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            Refund Policy
+          </Link>
+
+          <a
+            href="mailto:support@cpgeeks.com"
+            className="text-foreground/60 hover:text-primary transition-colors"
+          >
+            cpgeeksofficial@gmail.com
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {/* Bottom Footer */}
+    <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p className="text-sm text-foreground/50 text-center md:text-left">
+        © {new Date().getFullYear()} CP Geeks. All rights reserved.
+      </p>
+
+      <div className="flex items-center gap-5 text-sm">
+        <a
+          href="https://www.linkedin.com/company/cp-geeks"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-foreground/50 hover:text-primary transition-colors"
+        >
+          LinkedIn
+        </a>
+
+        {/* <a
+          href="https://twitter.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-foreground/50 hover:text-primary transition-colors"
+        >
+          Twitter
+        </a> */}
+
+        {/* <a
+          href="https://github.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-foreground/50 hover:text-primary transition-colors"
+        >
+          GitHub
+        </a> */}
+      </div>
+    </div>
+  </div>
+</footer>
 
       <style>{`
         @keyframes slide-up {
