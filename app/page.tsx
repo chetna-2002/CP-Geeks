@@ -12,6 +12,9 @@ import {
   Code2,
   Briefcase,
   Award,
+  Shield,
+  MessageCircle,
+  Linkedin
 } from "lucide-react";
 import Link from "next/link";
 
@@ -26,42 +29,48 @@ export default function Home() {
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [visibleElements, setVisibleElements] = useState<Set<string>>(
-    new Set(),
+    new Set()
   );
   const [placements, setPlacements] = useState<any[]>([]);
   const [instructors, setInstructors] = useState<any[]>([]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id;
-            setVisibleElements((prev) => new Set([...prev, id]));
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -80px 0px" },
-    );
+  useEffect(
+    () => {
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const id = entry.target.id;
+              setVisibleElements(prev => new Set([...prev, id]));
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -80px 0px" }
+      );
 
-    document.querySelectorAll("[data-scroll-animate]").forEach((el) => {
-      observer.observe(el);
-    });
+      document.querySelectorAll("[data-scroll-animate]").forEach(el => {
+        observer.observe(el);
+      });
 
-    return () => observer.disconnect();
-  }, [instructors]);
+      return () => observer.disconnect();
+    },
+    [instructors]
+  );
 
   /* ADDED: auto redirect if session exists */
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) {
-        router.replace("/dashboard");
-      }
-    };
-    checkSession();
-  }, [router]);
+  useEffect(
+    () => {
+      const checkSession = async () => {
+        const { data } = await supabase.auth.getUser();
+        if (data.user) {
+          router.replace("/dashboard");
+        }
+      };
+      checkSession();
+    },
+    [router]
+  );
 
   // Fetch placements data from Supabase on component mount
   useEffect(() => {
@@ -78,6 +87,7 @@ export default function Home() {
 
     loadPlacements();
   }, []);
+
   interface Course {
     id: number;
     title: string;
@@ -101,7 +111,7 @@ export default function Home() {
       duration: "4 months",
       price: "₹6,999",
       badge: "FAANG Ready",
-      features: ["Live Mentorship", "Mock Interviews", "Placement Support"],
+      features: ["Live Mentorship", "Mock Interviews", "Placement Support"]
     },
     {
       id: 2,
@@ -113,7 +123,7 @@ export default function Home() {
       duration: "3 months",
       price: "₹5,499",
       badge: "Project Heavy",
-      features: ["Real-time Projects", "Code Reviews", "Architecture Labs"],
+      features: ["Real-time Projects", "Code Reviews", "Architecture Labs"]
     },
     {
       id: 3,
@@ -125,326 +135,663 @@ export default function Home() {
       duration: "3 months",
       price: "₹4,999",
       badge: "L5+ Level",
-      features: ["Scale 0 to 1M", "Distributed Systems", "Cloud Native"],
-    },
+      features: ["Scale 0 to 1M", "Distributed Systems", "Cloud Native"]
+    }
   ];
 
   useEffect(() => {
-  const loadInstructors = async () => {
-    const { data, error } = await supabase
-      .from("instructors")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const loadInstructors = async () => {
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    console.log("INSTRUCTORS DATA:", data);
-    console.log("INSTRUCTORS ERROR:", error);
+      console.log("INSTRUCTORS DATA:", data);
+      console.log("INSTRUCTORS ERROR:", error);
 
-    if (!error && data) {
-      setInstructors(data);
-    }
-  };
+      if (!error && data) {
+        setInstructors(data);
+      }
+    };
 
-  loadInstructors();
-}, []);
+    loadInstructors();
+  }, []);
 
   const features = [
     {
       icon: Code2,
       title: "Live Classes",
-      description: "Interactive sessions with industry experts.",
+      description: "Interactive sessions with industry experts."
     },
     {
       icon: Users,
       title: "1:1 Mentorship",
-      description: "Personalized guidance to clear your path.",
+      description: "Personalized guidance to clear your path."
     },
     {
       icon: BookOpen,
       title: "Structured Learning",
-      description: "Step-by-step curriculum for mastery.",
+      description: "Step-by-step curriculum for mastery."
     },
     {
       icon: Zap,
       title: "24/7 Support",
-      description: "Instant doubt resolution anytime.",
+      description: "Instant doubt resolution anytime."
     },
     {
       icon: Award,
       title: "Resume Reviews",
-      description: "Craft a profile that demands attention.",
+      description: "Craft a profile that demands attention."
     },
     {
       icon: Briefcase,
       title: "Verified Referrals",
-      description: "Direct access to top hiring companies.",
-    },
+      description: "Direct access to top hiring companies."
+    }
   ];
 
   const roadmapSteps = [
     {
       icon: BookOpen,
       title: "Fundamentals",
-      description: "Master language basics",
+      description: "Master language basics"
     },
     { icon: Code2, title: "DSA Mastery", description: "Solve 400+ problems" },
     { icon: Award, title: "System Design", description: "LLD & HLD mastery" },
     {
       icon: Zap,
       title: "Real Projects",
-      description: "Build production clones",
+      description: "Build production clones"
     },
     { icon: Users, title: "Interview Prep", description: "Mock interviews" },
     {
       icon: Briefcase,
       title: "Dream Offer",
-      description: "Land your dream job",
-    },
+      description: "Land your dream job"
+    }
   ];
 
   const faqs = [
     {
       q: "What is CP Geeks?",
-      a: "CP Geeks is a comprehensive learning platform for aspiring software engineers to master DSA, system design, and land roles at top tech companies.",
+      a:
+        "CP Geeks is a comprehensive learning platform for aspiring software engineers to master DSA, system design, and land roles at top tech companies."
     },
     {
       q: "Do I need prior coding experience?",
-      a: "While basic coding helps, our fundamentals track starts from zero. We teach C++, Java, and Python from the ground up.",
+      a:
+        "While basic coding helps, our fundamentals track starts from zero. We teach C++, Java, and Python from the ground up."
     },
     {
       q: "What is the placement success rate?",
-      a: "Our students have secured roles at Big MNC's with average package improvements of 40-60%.",
+      a:
+        "Our students have secured roles at Big MNC's with average package improvements of 40-60%."
     },
     {
       q: "How long to complete?",
-      a: "Most courses take 3-4 months with consistent effort and lifetime access.",
-    },
+      a:
+        "Most courses take 3-4 months with consistent effort and lifetime access."
+    }
   ];
-
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-
       {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-border/30">
+      <section className="relative overflow-hidden border-b border-border/30 min-h-[92vh] flex items-center">
+        {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/15 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-0 left-0 h-[500px] w-[500px] bg-primary/20 blur-3xl rounded-full animate-pulse" />
+
           <div
-            className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse"
+            className="absolute bottom-0 right-0 h-[450px] w-[450px] bg-primary/10 blur-3xl rounded-full animate-pulse"
             style={{ animationDelay: "1s" }}
-          ></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float"></div>
+          />
+
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0,transparent_60%)]" />
+
+          {/* Grid Overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="text-center space-y-8">
-            <div className="inline-block animate-scale-in">
-              <span className="px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm border border-primary/20">
-                System Design Cohort 3.0
-              </span>
-            </div>
-
-            <h1 className="text-5xl md:text-7xl font-bold text-foreground leading-tight text-balance animate-slide-down">
-              Build the
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70 animate-gradient">
-                Future of Tech
-              </span>
-            </h1>
-
-            <p className="text-xl text-foreground/70 max-w-2xl mx-auto text-balance">
-              Master system design, scaling, and engineering leadership. Join
-              the top 1% of engineers.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-              <Link href="/courses">
-                <Button
-                  size="lg"
-                  className="gap-2 bg-primary hover:bg-primary/90 hover:scale-105 transition-transform"
-                >
-                  Start Learning <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-8 border-t border-border/30">
-              <div className="text-center hover:scale-110 transition-transform cursor-pointer">
-                <p className="text-2xl font-bold text-foreground">15k+</p>
-                <p className="text-sm text-foreground/60">Enrolled Students</p>
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+            {/* Left Content */}
+            <div className="space-y-8 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/10 text-primary text-sm font-medium backdrop-blur-sm animate-scale-in">
+                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                Cohort Based Learning Platform
               </div>
-              <div className="text-center hover:scale-110 transition-transform cursor-pointer">
-                <div className="flex items-center justify-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-4 w-4 fill-yellow-500 text-yellow-500 animate-bounce"
-                      style={{ animationDelay: `${i * 100}ms` }}
-                    />
-                  ))}
-                </div>
-                <p className="text-sm text-foreground/60">4.9/5 Rating</p>
+
+              <div className="space-y-6">
+                <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-balance animate-slide-down">
+                  Become a
+                  <br />
+                  <span className="bg-gradient-to-r from-primary via-white to-primary/70 bg-clip-text text-transparent animate-gradient bg-[length:200%_200%]">
+                    Top 1% Engineer
+                  </span>
+                </h1>
+
+                <p className="text-lg md:text-xl text-foreground/70 max-w-2xl leading-relaxed">
+                  Master DSA, Full Stack, System Design, and interview
+                  preparation through live mentorship, real projects, and
+                  structured learning.
+                </p>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 pt-2">
+                <Link href="/courses">
+                  <Button
+                    size="lg"
+                    className="h-14 px-8 text-base font-semibold gap-2 rounded-xl bg-primary hover:bg-primary/90 hover:scale-105 transition-all shadow-lg shadow-primary/20"
+                  >
+                    Explore Courses
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-4 pt-6 max-w-xl mx-auto lg:mx-0">
+                {[
+                  { value: "100+", label: "Students" },
+                  { value: "15+", label: "Projects" },
+                  { value: "24/7", label: "Support" }
+                ].map((item, i) =>
+                  <div
+                    key={i}
+                    className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-5 hover:border-primary/30 transition-all hover:-translate-y-1"
+                  >
+                    <p className="text-2xl md:text-3xl font-bold text-foreground">
+                      {item.value}
+                    </p>
+
+                    <p className="text-sm text-foreground/60 mt-1">
+                      {item.label}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Roadmap Section */}
-      <section
-        className="border-b border-border/30 py-20"
-        data-scroll-animate
-        id="roadmap-section"
-      >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-3">
-            <h2 className="text-4xl font-bold text-foreground">
-              From Zero to SDE-II
-            </h2>
-            <p className="text-foreground/60 text-lg">
-              A carefully crafted timeline to take you from beginner to
-              industry-ready engineer
-            </p>
-          </div>
+            {/* Right Side Visual */}
+            <div className="relative hidden lg:flex items-center justify-center">
+              <div className="relative w-full max-w-[520px] aspect-square">
+                {/* Main Card */}
+                <div className="absolute inset-0 rounded-[32px] border border-border/50 bg-card/70 backdrop-blur-xl shadow-2xl shadow-primary/10 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {roadmapSteps.map((step, i) => {
-              const Icon = step.icon;
-              const isVisible = visibleElements.has(`roadmap-${i}`);
-              return (
-                <div
-                  key={i}
-                  id={`roadmap-${i}`}
-                  data-scroll-animate
-                  className={`group p-6 rounded-xl border border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 hover:shadow-lg hover:-translate-y-2 cursor-pointer bg-card ${isVisible ? "animate-slide-up" : "opacity-0"
-                    }`}
-                  style={{ animationDelay: isVisible ? `${i * 60}ms` : "0" }}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors group-hover:rotate-12">
-                      <Icon className="h-5 w-5 text-primary transition-transform" />
+                  <div className="relative z-10 p-8 h-full flex flex-col justify-between">
+                    {/* Top */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-foreground/60">
+                            Current Track
+                          </p>
+
+                          <h3 className="text-2xl font-bold mt-1">
+                            DSA & System Design
+                          </h3>
+                        </div>
+
+                        <div className="h-14 w-14 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center">
+                          <Code2 className="h-7 w-7 text-primary" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 pt-4">
+                        {[
+                          "Scalable Architecture",
+                          "Distributed Systems",
+                          "Real Production Patterns",
+                          "Interview Preparation"
+                        ].map((item, i) =>
+                          <div
+                            key={i}
+                            className="flex items-center gap-3 rounded-xl border border-border/30 bg-background/50 px-4 py-3"
+                          >
+                            <div className="h-2 w-2 rounded-full bg-primary" />
+
+                            <p className="text-sm text-foreground/80">
+                              {item}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm text-foreground/60 mt-1">
-                        {step.description}
-                      </p>
+
+                    {/* Bottom */}
+                    <div className="grid grid-cols-2 gap-4 pt-6">
+                      <div className="rounded-2xl border border-border/30 bg-background/40 p-4">
+                        <p className="text-sm text-foreground/60">
+                          Live Classes
+                        </p>
+
+                        <p className="text-xl font-bold mt-1">Weekly</p>
+                      </div>
+
+                      <div className="rounded-2xl border border-border/30 bg-background/40 p-4">
+                        <p className="text-sm text-foreground/60">Mentorship</p>
+
+                        <p className="text-xl font-bold mt-1">1:1 Support</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+
+                {/* Floating Badge */}
+                <div className="absolute -top-6 -left-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-md px-5 py-4 shadow-xl animate-float">
+                  <p className="text-sm text-foreground/60">
+                    Interview Focused
+                  </p>
+                  <p className="text-lg font-bold">FAANG Ready</p>
+                </div>
+
+                {/* Floating Badge */}
+                <div
+                  className="absolute -bottom-6 -right-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-md px-5 py-4 shadow-xl animate-float"
+                  style={{ animationDelay: "1s" }}
+                >
+                  <p className="text-sm text-foreground/60">Learning Mode</p>
+                  <p className="text-lg font-bold">Live Cohorts</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ⭐ Placements Wall */}
-      <section className="border-b border-border/30 py-20 overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground">
-            Recent Placements
-          </h2>
-          <p className="text-foreground/60">Real outcomes. Visible momentum.</p>
-        </div>
-
-        <div className="marquee">
-          <div className="marquee-track">
-            {[...placements, ...placements].map((p, i) => (
-              <div key={i} className="placement-card">
-                <img src={`${p.image_url}?auto=format&fit=crop&w=600&q=60`} />
-
-                <div className="placement-overlay">
-                  <p className="placement-name">{p.name}</p>
-                  <p className="placement-company">{p.company}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="marquee mt-6 reverse">
-          <div className="marquee-track">
-            {[...placements, ...placements, ...placements].map((p, i) => (
-              <div key={i} className="placement-card">
-                <img src={`${p.image_url}?auto=format&fit=crop&w=600&q=60`} />
-
-                <div className="placement-overlay">
-                  <p className="placement-name">{p.name}</p>
-                  <p className="placement-company">{p.company}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Courses */}
+      {/* 🚀 Roadmap Section */}
       <section
-        className="border-b border-border/30 py-20"
+        className="relative border-b border-border/30 py-24 overflow-hidden"
         data-scroll-animate
-        id="courses-section"
+        id="roadmap-section"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-3">
-            <h2 className="text-4xl font-bold text-foreground">
-              Featured Courses
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/4 h-[350px] w-[350px] rounded-full bg-primary/10 blur-3xl" />
+
+          <div className="absolute bottom-0 right-1/4 h-[350px] w-[350px] rounded-full bg-primary/5 blur-3xl" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-20 space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              Structured Learning Path
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+              From Beginner to
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+                {" "}Top Engineer
+              </span>
             </h2>
-            <p className="text-foreground/60 text-lg">
-              Choose the path that matches your career goals
+
+            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+              A carefully designed roadmap covering problem solving,
+              development, system design, projects, and interview preparation.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Timeline */}
+          <div className="relative">
+            {/* Center Line */}
+            <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-primary/30 to-transparent lg:block" />
+
+            <div className="space-y-10">
+              {roadmapSteps.map((step, i) => {
+                const Icon = step.icon;
+                const isVisible = visibleElements.has(`roadmap-${i}`);
+
+                return (
+                  <div
+                    key={i}
+                    id={`roadmap-${i}`}
+                    data-scroll-animate
+                    className={`relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${isVisible
+                      ? "animate-slide-up"
+                      : "opacity-0"}`}
+                    style={{
+                      animationDelay: isVisible ? `${i * 120}ms` : "0ms"
+                    }}
+                  >
+                    {/* Left Side */}
+                    <div
+                      className={`${i % 2 === 0
+                        ? "lg:text-right lg:pr-16"
+                        : "lg:order-2 lg:pl-16"}`}
+                    >
+                      <div className="group relative overflow-hidden rounded-3xl border border-border/40 bg-card/50 backdrop-blur-xl p-8 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+                        {/* Glow */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                        <div className="relative z-10">
+                          <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                            <Icon className="h-7 w-7" />
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3 justify-start lg:justify-end">
+                              <span className="text-sm font-medium text-primary">
+                                Step {i + 1}
+                              </span>
+
+                              <div className="h-px w-10 bg-primary/30" />
+                            </div>
+
+                            <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                              {step.title}
+                            </h3>
+
+                            <p className="text-foreground/65 leading-relaxed">
+                              {step.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Center Node */}
+                    <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:flex">
+                      <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-primary/30 bg-background shadow-xl shadow-primary/10">
+                        <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+
+                        <div className="relative z-10 h-4 w-4 rounded-full bg-primary" />
+                      </div>
+                    </div>
+
+                    {/* Empty Side */}
+                    <div className={`${i % 2 === 0 ? "lg:order-2" : ""}`} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ⭐ Premium Placements Wall */}
+      <section className="relative border-b border-border/30 py-24 overflow-hidden">
+        {/* Background Glow */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/3 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl" />
+
+          <div className="absolute bottom-0 right-1/4 h-[350px] w-[350px] rounded-full bg-primary/5 blur-3xl" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              Student Success Stories
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+              Recent Placements
+            </h2>
+
+            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+              Our learners are building careers at fast-growing startups and top
+              product companies through consistent mentorship and structured
+              preparation.
+            </p>
+          </div>
+
+          {/* Top Marquee */}
+          <div className="marquee mask-fade">
+            <div className="marquee-track">
+              {[...placements, ...placements].map((p, i) =>
+                <div
+                  key={i}
+                  className="group relative min-w-[300px] h-[220px] rounded-3xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10"
+                >
+                  {/* Image */}
+                  <img
+                    src={`${p.image_url}?auto=format&fit=crop&w=900&q=80`}
+                    alt={p.name}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+
+                  {/* Shine Effect */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                    <div className="absolute -left-40 top-0 h-full w-24 rotate-12 bg-white/10 blur-2xl animate-shine" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-bold text-white">
+                        {p.name}
+                      </h3>
+
+                      <p className="text-sm text-white/70">
+                        Placed at {p.company}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Floating Badge */}
+                  <div className="absolute top-4 right-4 rounded-full border border-white/10 bg-black/40 backdrop-blur-md px-3 py-1 text-xs text-white/80">
+                    Placement
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom Marquee */}
+          <div className="marquee mask-fade mt-8 reverse">
+            <div className="marquee-track">
+              {[...placements, ...placements].map((p, i) =>
+                <div
+                  key={i}
+                  className="group relative min-w-[260px] h-[180px] rounded-3xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10"
+                >
+                  <img
+                    src={`${p.image_url}?auto=format&fit=crop&w=800&q=80`}
+                    alt={p.name}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 className="text-base font-semibold text-white">
+                      {p.name}
+                    </h3>
+
+                    <p className="text-xs text-white/70">
+                      {p.company}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 📚 Featured Courses Section */}
+      <section
+        className="relative border-b border-border/30 py-24 overflow-hidden"
+        data-scroll-animate
+        id="courses-section"
+      >
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 right-0 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl" />
+
+          <div className="absolute bottom-0 left-0 h-[350px] w-[350px] rounded-full bg-primary/5 blur-3xl" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-20 space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              Career Focused Learning
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+              Featured
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+                {" "}Courses
+              </span>
+            </h2>
+
+            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+              Industry-aligned programs designed to help you crack interviews,
+              build real-world projects, and grow into a confident engineer.
+            </p>
+          </div>
+
+          {/* Course Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
             {courses.map((course, i) => {
               const isVisible = visibleElements.has(`course-${course.id}`);
+
               return (
                 <div
                   key={course.id}
                   id={`course-${course.id}`}
                   data-scroll-animate
-                  className={`group rounded-xl border border-border/50 overflow-hidden hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 bg-card hover:-translate-y-2 ${isVisible ? "animate-slide-up" : "opacity-0"
-                    }`}
-                  style={{ animationDelay: isVisible ? `${i * 120}ms` : "0" }}
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl transition-all duration-500 hover:-translate-y-3 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${isVisible
+                    ? "animate-slide-up"
+                    : "opacity-0"}`}
+                  style={{
+                    animationDelay: isVisible ? `${i * 120}ms` : "0ms"
+                  }}
                 >
-                  <div className="p-6 space-y-4">
-                    <div className="flex items-start justify-between">
-                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {/* Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                  {/* Top Bar */}
+                  <div className="relative z-10 flex items-center justify-between border-b border-border/20 px-5 py-4">
+                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                      {course.badge}
+                    </span>
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-1 flex-col p-5">
+                    {/* Title + Description */}
+                    <div>
+                      <h3 className="text-2xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary">
                         {course.title}
                       </h3>
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary whitespace-nowrap">
-                        {course.badge}
-                      </span>
+
+                      <p className="mt-4 text-foreground/65 leading-relaxed">
+                        {course.description}
+                      </p>
                     </div>
-                    <p className="text-sm text-foreground/70 line-clamp-2">
-                      {course.description}
-                    </p>
-                    <div className="space-y-2">
-                      {course.features.map((feature, j) => (
+
+                    {/* Meta */}
+                    <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/30 bg-background/40 p-4">
+                      <div>
+                        <p className="text-xs text-foreground/50">Duration</p>
+
+                        <p className="font-semibold text-foreground">
+                          {course.duration}
+                        </p>
+                      </div>
+
+                      <div className="h-10 w-px bg-border/30" />
+
+                      {/* <div>
+                        <p className="text-xs text-foreground/50">Students</p>
+
+                        <p className="font-semibold text-foreground">
+                          {course.students.toLocaleString()}+
+                        </p>
+                      </div> */}
+                    </div>
+
+                    {/* Features */}
+                    <div className="mt-7 flex-1 space-y-3">
+                      {course.features.map((feature, j) =>
                         <div
                           key={j}
-                          className="flex items-center gap-2 text-sm text-foreground/60"
+                          className="flex items-center gap-3 rounded-xl border border-border/20 bg-background/30 px-4 py-3 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5"
                         >
-                          <div className="h-1.5 w-1.5 rounded-full bg-primary group-hover:scale-150 transition-transform"></div>
-                          {feature}
+                          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10">
+                            <div className="h-2 w-2 rounded-full bg-primary" />
+                          </div>
+
+                          <p className="text-sm text-foreground/75">
+                            {feature}
+                          </p>
                         </div>
-                      ))}
+                      )}
                     </div>
-                    <div className="pt-4 border-t border-border/30 flex items-center justify-between">
-                      <p className="text-2xl font-bold text-foreground">
-                        {course.price}
-                      </p>
+
+                    {/* Footer */}
+                    <div className="mt-8 flex items-center justify-between border-t border-border/20 pt-6">
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-foreground/50">
+                          Starting From
+                        </p>
+
+                        <p className="text-3xl font-black text-foreground">
+                          {course.price}
+                        </p>
+                      </div>
+
                       <Link href="/courses">
                         <Button
-                          size="sm"
-                          className="gap-2 group/btn hover:gap-3 transition-all"
+                          size="lg"
+                          className="group/btn gap-2 rounded-xl px-6 shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:gap-3"
                         >
-                          Explore <ArrowRight className="h-3 w-3" />
+                          Explore
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                         </Button>
                       </Link>
                     </div>
                   </div>
+
+                  {/* Floating Accent */}
+                  <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/10 blur-3xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
                 </div>
               );
             })}
@@ -453,43 +800,158 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
+      {/* ✨ Why Choose CP Geeks */}
       <section
-        className="border-b border-border/30 py-20 bg-primary/5"
+        className="relative border-b border-border/30 py-24 overflow-hidden"
         data-scroll-animate
         id="features-section"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-3">
-            <h2 className="text-4xl font-bold text-foreground">
-              Why Choose CP Geeks?
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/4 h-[320px] w-[320px] rounded-full bg-primary/[0.05] blur-[120px]" />
+
+          <div className="absolute bottom-0 right-1/4 h-[280px] w-[280px] rounded-full bg-primary/[0.03] blur-[120px]" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              Built for Serious Engineers
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+              Why Choose
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+                {" "}CP Geeks
+              </span>
             </h2>
-            <p className="text-foreground/60 text-lg">
-              Everything you need to accelerate your tech career
+
+            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+              A focused ecosystem for engineers who want structured growth,
+              practical skills, mentorship, and real interview preparation.
             </p>
           </div>
 
+          {/* Unified Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, i) => {
-              const Icon = feature.icon;
+            {[
+              {
+                icon: Code2,
+                title: "Structured Learning Paths",
+                description:
+                  "Roadmaps designed to take you from beginner concepts to advanced engineering topics step-by-step."
+              },
+
+              {
+                icon: Users,
+                title: "Live Mentorship",
+                description:
+                  "Interactive sessions, doubt solving, and mentorship focused on consistent improvement."
+              },
+
+              {
+                icon: Briefcase,
+                title: "Interview Preparation",
+                description:
+                  "Preparation aligned with coding rounds, system design interviews, and hiring expectations."
+              },
+
+              {
+                icon: Zap,
+                title: "Project Based Learning",
+                description:
+                  "Build practical projects while strengthening engineering thinking and problem-solving ability."
+              },
+
+              {
+                icon: Award,
+                title: "Career Focused Growth",
+                description:
+                  "Learn modern development skills relevant to real product engineering environments."
+              },
+
+              {
+                icon: BookOpen,
+                title: "Consistency Driven",
+                description:
+                  "Designed to help learners avoid random tutorial hopping and maintain long-term progress."
+              },
+
+              {
+                icon: Star,
+                title: "Focused Community",
+                description:
+                  "Surround yourself with learners working toward similar engineering and career goals."
+              },
+
+              {
+                icon: ArrowRight,
+                title: "Practical Curriculum",
+                description:
+                  "Concepts taught with implementation, problem solving, and real-world engineering context."
+              },
+
+              {
+                icon: Shield,
+                title: "Long-Term Engineering Mindset",
+                description:
+                  "Beyond interview prep, the focus is on developing scalable thinking and strong fundamentals."
+              }
+            ].map((item, i) => {
+              const Icon = item.icon;
               const isVisible = visibleElements.has(`feature-${i}`);
+
               return (
                 <div
                   key={i}
                   id={`feature-${i}`}
                   data-scroll-animate
-                  className={`group p-6 rounded-xl border border-border/50 hover:border-primary/30 bg-background transition-all duration-300 hover:shadow-lg hover:-translate-y-2 ${isVisible ? "animate-slide-up" : "opacity-0"
-                    }`}
-                  style={{ animationDelay: isVisible ? `${i * 60}ms` : "0" }}
+                  className={`group relative overflow-hidden rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl p-6 transition-all duration-500 hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${isVisible
+                    ? "animate-slide-up"
+                    : "opacity-0"}`}
+                  style={{
+                    animationDelay: isVisible ? `${i * 70}ms` : "0ms"
+                  }}
                 >
-                  <div className="p-3 rounded-lg bg-primary/10 w-fit mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
-                    <Icon className="h-6 w-6 text-primary" />
+                  {/* Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                  {/* Icon */}
+                  <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/15">
+                    <Icon className="h-6 w-6" />
                   </div>
-                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-foreground/60">
-                    {feature.description}
-                  </p>
+
+                  {/* Content */}
+                  <div className="relative z-10 mt-6">
+                    <h3 className="text-xl font-bold text-foreground transition-colors group-hover:text-primary">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-relaxed text-foreground/65">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  {/* Bottom Accent */}
+                  <div className="relative z-10 mt-6 flex items-center gap-2 text-sm text-primary">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+
+                    <span>Focused Learning Experience</span>
+                  </div>
+
+                  {/* Floating Glow */}
+                  <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/[0.05] blur-3xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
                 </div>
               );
             })}
@@ -498,67 +960,157 @@ export default function Home() {
       </section>
 
       {/* Instructors Preview */}
+      {/* 👨‍🏫 Instructors Section */}
       <section
-        className="border-b border-border/30 py-20"
+        className="relative border-b border-border/30 py-24 overflow-hidden"
         data-scroll-animate
         id="instructors-section"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-3">
-            <h2 className="text-4xl font-bold text-foreground">
-              Learn from the Best
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/4 h-[320px] w-[320px] rounded-full bg-primary/[0.05] blur-[120px]" />
+
+          <div className="absolute bottom-0 right-1/4 h-[280px] w-[280px] rounded-full bg-primary/[0.03] blur-[120px]" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              Core Mentorship Team
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+              Learn from
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+                {" "}Featured Mentors
+              </span>
             </h2>
-            <p className="text-foreground/60 text-lg">
-              Industry experts with real-world experience
+
+            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+              Practical mentorship and engineering guidance focused on long-term
+              growth, consistency, and real-world learning.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
             {instructors.map((instructor, i) => {
               const isVisible = visibleElements.has(`instructor-${i}`);
+
               return (
                 <div
                   key={i}
                   id={`instructor-${i}`}
                   data-scroll-animate
-                  className={`group rounded-xl border border-border/50 p-8 hover:border-primary/30 bg-card transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 ${isVisible ? "animate-slide-up" : "opacity-0"
-                    }`}
-                  style={{ animationDelay: isVisible ? `${i * 120}ms` : "0" }}
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${isVisible
+                    ? "animate-slide-up"
+                    : "opacity-0"}`}
+                  style={{
+                    animationDelay: isVisible ? `${i * 100}ms` : "0ms"
+                  }}
                 >
-                  <div className="flex items-center gap-4 mb-4">
-                    <img
-                      src={instructor.image_url}
-                      alt={instructor.name}
-                      className="h-14 w-14 rounded-full object-cover"
+                  {/* Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                  {/* Top Banner */}
+                  <div className="relative h-24 border-b border-border/20 bg-gradient-to-br from-primary/[0.08] via-primary/[0.03] to-transparent">
+                    <div
+                      className="absolute inset-0 opacity-[0.03]"
+                      style={{
+                        backgroundImage:
+                          "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+                        backgroundSize: "30px 30px"
+                      }}
                     />
-                    <div>
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {instructor.name}
-                      </h3>
-                      <p className="text-xs text-primary font-semibold">
-                        {instructor.role}
+
+                    <div className="absolute right-5 top-5 rounded-full border border-primary/20 bg-background/50 px-3 py-1 text-xs font-medium text-primary backdrop-blur-md">
+                      Mentor
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-1 flex-col p-6">
+                    {/* Profile */}
+                    <div className="-mt-14">
+                      <img
+                        src={instructor.image_url}
+                        alt={instructor.name}
+                        className="h-24 w-24 rounded-full border-4 border-background object-cover shadow-xl"
+                      />
+
+                      <div className="mt-5">
+                        <h3 className="text-2xl font-bold text-foreground transition-colors group-hover:text-primary">
+                          {instructor.name}
+                        </h3>
+
+                        <p className="mt-1 text-sm font-semibold text-primary">
+                          {instructor.role}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Bio */}
+                    <div className="mt-6">
+                      <p className="text-sm leading-relaxed text-foreground/60">
+                        {instructor.bio}
                       </p>
+
+                      <div className="mt-5 rounded-2xl border border-border/20 bg-background/30 p-4">
+                        <p className="text-sm leading-relaxed text-foreground/75">
+                          {instructor.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Spacer */}
+                    <div className="flex-1" />
+
+                    {/* Bottom */}
+                    <div className="mt-4 border-t border-border/20 pt-5">
+                      {/* Stats */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-foreground/50">
+                            Learners Mentored
+                          </p>
+
+                          <p className="mt-1 text-2xl font-black text-foreground">
+                            {instructor.students.toLocaleString()}+
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Tags */}
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {[
+                          "Mentorship",
+                          "Projects",
+                          "Career Growth"
+                        ].map((tag, idx) =>
+                          <div
+                            key={idx}
+                            className="rounded-full border border-border/20 bg-background/40 px-3 py-1.5 text-xs text-foreground/65"
+                          >
+                            {tag}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <p className="text-xs text-foreground/60 mb-3">
-                    {instructor.bio}
-                  </p>
-                  <p className="text-sm text-foreground/70 mb-4">
-                    {instructor.description}
-                  </p>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, j) => (
-                        <Star
-                          key={j}
-                          className="h-3 w-3 fill-yellow-500 text-yellow-500"
-                        />
-                      ))}
-                    </div>
-                    <span className="text-foreground/60">
-                      {instructor.students.toLocaleString()}
-                    </span>
-                  </div>
+
+                  {/* Floating Accent */}
+                  <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-primary/[0.05] blur-3xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
                 </div>
               );
             })}
@@ -567,248 +1119,464 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
+      {/* ❓ FAQ Section */}
       <section
-        className="border-b border-border/30 py-20 bg-primary/5"
+        className="relative border-b border-border/30 py-24 overflow-hidden"
         data-scroll-animate
         id="faq-section"
       >
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 space-y-3">
-            <h2 className="text-4xl font-bold text-foreground">
-              Frequently Asked Questions
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/4 h-[320px] w-[320px] rounded-full bg-primary/[0.05] blur-[120px]" />
+
+          <div className="absolute bottom-0 right-1/4 h-[280px] w-[280px] rounded-full bg-primary/[0.03] blur-[120px]" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              Common Questions
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+              Frequently Asked
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+                {" "}Questions
+              </span>
             </h2>
-            <p className="text-foreground/60">
-              Everything you need to know about CP Geeks
+
+            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+              Everything you need to know about learning, mentorship, live
+              cohorts, and the CP Geeks experience.
             </p>
           </div>
 
-          <div className="space-y-4">
-            {faqs.map((faq, i) => {
-              const isVisible = visibleElements.has(`faq-${i}`);
-              return (
-                <div
-                  key={i}
-                  id={`faq-${i}`}
-                  data-scroll-animate
-                  className={`rounded-lg border border-border/50 bg-background overflow-hidden hover:border-primary/30 transition-all ${isVisible ? "animate-slide-up" : "opacity-0"
-                    }`}
-                  style={{ animationDelay: isVisible ? `${i * 75}ms` : "0" }}
-                >
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full px-6 py-4 flex items-center justify-between hover:bg-primary/5 transition-colors"
+          {/* FAQ Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
+            {/* FAQ Accordion */}
+            <div className="space-y-4">
+              {faqs.map((faq, i) => {
+                const isVisible = visibleElements.has(`faq-${i}`);
+
+                return (
+                  <div
+                    key={i}
+                    id={`faq-${i}`}
+                    data-scroll-animate
+                    className={`group overflow-hidden rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl transition-all duration-500 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 ${isVisible
+                      ? "animate-slide-up"
+                      : "opacity-0"}`}
+                    style={{
+                      animationDelay: isVisible ? `${i * 70}ms` : "0ms"
+                    }}
                   >
-                    <span className="font-semibold text-foreground text-left">
-                      {faq.q}
-                    </span>
-                    <span
-                      className={`transition-transform ${openFaq === i ? "rotate-180" : ""
-                        }`}
+                    {/* Question */}
+                    <button
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                      className="flex w-full items-center justify-between px-6 py-5 text-left transition-all duration-300 hover:bg-primary/[0.03]"
                     >
-                      ▼
-                    </span>
-                  </button>
-                  {openFaq === i && (
-                    <div className="px-6 py-4 border-t border-border/30 bg-primary/5 animate-slide-down">
-                      <p className="text-foreground/70">{faq.a}</p>
+                      <div className="flex items-start gap-4">
+                        {/* Number */}
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-semibold text-primary">
+                          {String(i + 1).padStart(2, "0")}
+                        </div>
+
+                        {/* Question */}
+                        <div>
+                          <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
+                            {faq.q}
+                          </h3>
+                        </div>
+                      </div>
+
+                      {/* Icon */}
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl border border-border/30 bg-background/40 text-foreground/60 transition-all duration-300 ${openFaq ===
+                        i
+                          ? "rotate-180 border-primary/20 bg-primary/10 text-primary"
+                          : ""}`}
+                      >
+                        ▼
+                      </div>
+                    </button>
+
+                    {/* Answer */}
+                    <div
+                      className={`grid transition-all duration-500 ease-in-out ${openFaq ===
+                      i
+                        ? "grid-rows-[1fr]"
+                        : "grid-rows-[0fr]"}`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="border-t border-border/20 px-6 pb-6 pt-5">
+                          <div className="ml-[52px]">
+                            <p className="leading-relaxed text-foreground/70">
+                              {faq.a}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  )}
+
+                    {/* Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Right Side Info Card */}
+            <div className="sticky top-24 hidden lg:block">
+              <div className="relative overflow-hidden rounded-3xl border border-border/40 bg-card/50 backdrop-blur-xl p-6">
+                {/* Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent" />
+
+                <div className="relative z-10">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
+                    <MessageCircle className="h-6 w-6" />
+                  </div>
+
+                  <div className="mt-6">
+                    <h3 className="text-2xl font-bold text-foreground">
+                      Still have questions?
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-relaxed text-foreground/65">
+                      Reach out for guidance regarding cohorts, learning paths,
+                      mentorship, or engineering preparation.
+                    </p>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {[
+                      "Live Cohorts",
+                      "DSA",
+                      "System Design",
+                      "Projects"
+                    ].map((tag, idx) =>
+                      <div
+                        key={idx}
+                        className="rounded-full border border-border/20 bg-background/40 px-3 py-1.5 text-xs text-foreground/65"
+                      >
+                        {tag}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bottom */}
+                  <div className="mt-8 border-t border-border/20 pt-5">
+                    <p className="text-xs uppercase tracking-wide text-foreground/50">
+                      Support
+                    </p>
+
+                    <p className="mt-2 font-semibold text-foreground">
+                      cpgeeksofficial@gmail.com
+                    </p>
+                  </div>
                 </div>
-              );
-            })}
+
+                {/* Floating Accent */}
+                <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-primary/[0.05] blur-3xl" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20" data-scroll-animate id="cta-section">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <h2 className="text-5xl font-bold text-foreground">
-            Ready to Begin?
-          </h2>
-          <p className="text-lg text-foreground/70">
-            Join 15,000+ engineers building the future
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/signup">
-              <Button
-                size="lg"
-                className="gap-2 bg-primary hover:bg-primary/90 hover:scale-105 transition-transform"
-              >
-                Start Learning Now <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              className="hover:scale-105 transition-transform bg-transparent"
-            >
-              Schedule a Call
-            </Button>
+      {/* 🚀 CTA Section */}
+      <section
+        className="relative py-24 overflow-hidden"
+        data-scroll-animate
+        id="cta-section"
+      >
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[140px]" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          {/* Main Card */}
+          <div className="relative overflow-hidden rounded-[36px] border border-border/40 bg-card/50 backdrop-blur-xl px-8 py-14 md:px-14 md:py-16">
+            {/* Glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-transparent" />
+
+            {/* Floating Accent */}
+            <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/[0.05] blur-3xl" />
+
+            <div className="relative z-10 text-center">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                Start Your Engineering Journey
+              </div>
+
+              {/* Heading */}
+              <div className="mt-8 space-y-5">
+                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-foreground leading-tight">
+                  Build Skills That
+                  <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+                    {" "}Actually Matter
+                  </span>
+                </h2>
+
+                <p className="mx-auto max-w-2xl text-lg leading-relaxed text-foreground/65">
+                  Learn through structured roadmaps, mentorship, practical
+                  projects, and interview-focused preparation designed for
+                  aspiring software engineers.
+                </p>
+              </div>
+
+              {/* Tags */}
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                {[
+                  "Live Cohorts",
+                  "DSA",
+                  "System Design",
+                  "Projects",
+                  "Mentorship"
+                ].map((tag, idx) =>
+                  <div
+                    key={idx}
+                    className="rounded-full border border-border/20 bg-background/40 px-4 py-2 text-sm text-foreground/70"
+                  >
+                    {tag}
+                  </div>
+                )}
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link href="/signup">
+                  <Button
+                    size="lg"
+                    className="group gap-2 rounded-xl px-8 shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 hover:gap-3"
+                  >
+                    Start Learning
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+
+                <Link href="/courses">
+                  <Button
+                    size="lg"
+                    className="rounded-xl border border-border/40 bg-white/5 px-8 text-foreground shadow-none backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.08] hover:text-foreground"
+                  >
+                    Explore Courses
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      {/* <footer className="border-t border-border/30 px-4 py-12 sm:px-6 lg:px-8 bg-foreground/2">
-        <div className="mx-auto max-w-7xl">
-          <div className="border-t border-border/30 pt-8 flex items-center justify-between">
-            <p className="text-sm text-foreground/50">
+      {/* 🌌 Footer */}
+      <footer className="relative overflow-hidden border-t border-border/30 bg-background">
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute left-1/4 top-0 h-[280px] w-[280px] rounded-full bg-primary/[0.04] blur-[120px]" />
+
+          <div className="absolute bottom-0 right-1/4 h-[240px] w-[240px] rounded-full bg-primary/[0.03] blur-[120px]" />
+
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "40px 40px"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          {/* Main Footer */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.8fr_0.8fr] gap-12 border-b border-border/20 pb-12">
+            {/* Brand */}
+            <div className="space-y-6">
+              {/* Logo */}
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-xl font-black text-primary shadow-lg shadow-primary/10">
+                  CG
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-black tracking-tight text-foreground">
+                    CP Geeks
+                  </h3>
+
+                  <p className="mt-1 text-sm text-foreground/55">
+                    Structured Learning for Engineers
+                  </p>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="max-w-md text-sm leading-relaxed text-foreground/65">
+                CP Geeks is a modern engineering learning platform focused on
+                DSA, System Design, Full Stack Development, practical projects,
+                and interview preparation through structured learning paths.
+              </p>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "DSA",
+                  "System Design",
+                  "Projects",
+                  "Mentorship",
+                  "Interview Prep"
+                ].map((tag, idx) =>
+                  <div
+                    key={idx}
+                    className="rounded-full border border-border/20 bg-card/40 px-3 py-1.5 text-xs text-foreground/65 backdrop-blur-sm"
+                  >
+                    {tag}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-foreground mb-5">
+                Navigation
+              </h4>
+
+              <div className="flex flex-col gap-4 text-sm">
+                <Link
+                  href="/courses"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  Courses
+                </Link>
+
+                <Link
+                  href="/dsa-sheets"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  DSA Sheets
+                </Link>
+
+                <Link
+                  href="/jobs"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  Jobs
+                </Link>
+
+                <Link
+                  href="/signup"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  Get Started
+                </Link>
+              </div>
+            </div>
+
+            {/* Legal + Contact */}
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-foreground mb-5">
+                Legal & Contact
+              </h4>
+
+              <div className="flex flex-col gap-4 text-sm">
+                <Link
+                  href="/terms"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  Terms & Conditions
+                </Link>
+
+                <Link
+                  href="/privacy-policy"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  Privacy Policy
+                </Link>
+
+                <Link
+                  href="/refund-policy"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  Refund Policy
+                </Link>
+
+                <a
+                  href="mailto:cpgeeksofficial@gmail.com"
+                  className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                  cpgeeksofficial@gmail.com
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Footer */}
+          <div className="flex flex-col items-center justify-between gap-5 pt-8 md:flex-row">
+            {/* Left */}
+            <p className="text-sm text-foreground/50 text-center md:text-left">
               © {new Date().getFullYear()} CP Geeks. All rights reserved.
             </p>
-            <div className="flex gap-4">
+
+            {/* Center */}
+            <div className="hidden md:flex items-center gap-3 text-xs text-foreground/40">
+              <span>Built for Engineers</span>
+
+              <div className="h-1 w-1 rounded-full bg-primary/40" />
+
+              <span>Focused Learning</span>
+
+              <div className="h-1 w-1 rounded-full bg-primary/40" />
+
+              <span>Long-Term Growth</span>
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-4">
               <a
                 href="https://www.linkedin.com/company/cp-geeks"
-                className="text-foreground/50 hover:text-foreground transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 rounded-xl border border-border/30 bg-card/40 px-4 py-2.5 text-foreground/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-primary/[0.06] hover:text-primary"
               >
-                LinkedIn
+                <Linkedin className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+
+                <span className="text-sm font-medium">LinkedIn</span>
               </a>
             </div>
           </div>
         </div>
-      </footer> */}
-      <footer className="border-t border-border/30 px-4 py-12 sm:px-6 lg:px-8 bg-foreground/2">
-  <div className="mx-auto max-w-7xl">
-    
-    {/* Top Footer */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-border/30">
-      
-      {/* Brand */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-black font-bold">
-            CG
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">
-              CP Geeks
-            </h3>
-            <p className="text-sm text-foreground/60">
-              Build the Future of Tech
-            </p>
-          </div>
-        </div>
-
-        <p className="text-sm text-foreground/60 max-w-sm leading-relaxed">
-          CP Geeks is a modern learning platform focused on DSA,
-          System Design, Full Stack Development, and interview preparation
-          for aspiring software engineers.
-        </p>
-      </div>
-
-      {/* Quick Links */}
-      <div>
-        <h4 className="text-sm font-semibold text-foreground mb-4">
-          Quick Links
-        </h4>
-
-        <div className="flex flex-col gap-3 text-sm">
-          <Link
-            href="/courses"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            Courses
-          </Link>
-
-          <Link
-            href="/instructors"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            Instructors
-          </Link>
-
-          <Link
-            href="/jobs"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            Jobs
-          </Link>
-
-          <Link
-            href="/dsa-sheets"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            DSA Sheets
-          </Link>
-        </div>
-      </div>
-
-      {/* Legal */}
-      <div>
-        <h4 className="text-sm font-semibold text-foreground mb-4">
-          Legal
-        </h4>
-
-        <div className="flex flex-col gap-3 text-sm">
-          <Link
-            href="/terms"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            Terms & Conditions
-          </Link>
-
-          <Link
-            href="/privacy-policy"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            Privacy Policy
-          </Link>
-
-          <Link
-            href="/refund-policy"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            Refund Policy
-          </Link>
-
-          <a
-            href="mailto:support@cpgeeks.com"
-            className="text-foreground/60 hover:text-primary transition-colors"
-          >
-            cpgeeksofficial@gmail.com
-          </a>
-        </div>
-      </div>
-    </div>
-
-    {/* Bottom Footer */}
-    <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p className="text-sm text-foreground/50 text-center md:text-left">
-        © {new Date().getFullYear()} CP Geeks. All rights reserved.
-      </p>
-
-      <div className="flex items-center gap-5 text-sm">
-        <a
-          href="https://www.linkedin.com/company/cp-geeks"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-foreground/50 hover:text-primary transition-colors"
-        >
-          LinkedIn
-        </a>
-
-        {/* <a
-          href="https://twitter.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-foreground/50 hover:text-primary transition-colors"
-        >
-          Twitter
-        </a> */}
-
-        {/* <a
-          href="https://github.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-foreground/50 hover:text-primary transition-colors"
-        >
-          GitHub
-        </a> */}
-      </div>
-    </div>
-  </div>
-</footer>
+      </footer>
 
       <style>{`
         @keyframes slide-up {
@@ -970,6 +1738,30 @@ export default function Home() {
         font-size:12px;
         color:#d1d5db;
         }
+
+        .mask-fade {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-250px) rotate(12deg);
+  }
+
+  100% {
+    transform: translateX(1200px) rotate(12deg);
+  }
+}
+
+.animate-shine {
+  animation: shine 4s linear infinite;
+}
       `}</style>
     </div>
   );
