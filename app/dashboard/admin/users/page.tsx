@@ -1,12 +1,17 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { createClient } from '@/utils/supabase/client'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Input } from '@/components/ui/input'
-import { Edit2, Search, ShieldAlert, Trash2 } from 'lucide-react'
+import { useState, useEffect, useMemo } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,166 +21,284 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import {
+  Search,
+  Users,
+  ShieldAlert,
+  Trash2,
+  Edit2,
+  Calendar,
+  Mail,
+  Sparkles,
+  User2,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
 
 export default function UsersPage() {
-  const supabase = createClient()
+  const supabase = createClient();
 
-  const [users, setUsers] = useState<any[]>([])
-  const [searchTerm, setSearchTerm] = useState('')
+  const [users, setUsers] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [editUser, setEditUser] = useState<any>(null);
+  const [newName, setNewName] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    fetchUsers();
+  }, []);
 
-  const fetchUsers = async () => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false })
+  async function fetchUsers() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    setUsers(data || [])
+    if (!error) {
+      setUsers(data || []);
+    }
+    setLoading(false);
   }
 
-  /* ---------- ACTIONS ---------- */
-
-  const handleDeleteUser = async (id: string) => {
-    await supabase.from('profiles').delete().eq('id', id)
-    fetchUsers()
+  async function handleDelete(id: string) {
+    await supabase.from("profiles").delete().eq("id", id);
+    fetchUsers();
   }
 
-  const handleToggleRole = async (user: any) => {
-    const newRole = user.role === 'Admin' ? 'Student' : 'Admin'
-    await supabase.from('profiles').update({ role: newRole }).eq('id', user.id)
-    fetchUsers()
+  async function toggleRole(user: any) {
+    const role = user.role === "Admin" ? "User" : "Admin";
+    await supabase.from("profiles").update({ role }).eq("id", user.id);
+    fetchUsers();
   }
 
-  const handleEditName = async (user: any) => {
-    const newName = prompt('Enter new name', user.full_name)
-    if (!newName) return
-    await supabase.from('profiles').update({ full_name: newName }).eq('id', user.id)
-    fetchUsers()
+  function openEdit(user: any) {
+    setEditUser(user);
+    setNewName(user.full_name || "");
   }
 
-  /* ---------- FILTER ---------- */
+  async function saveName() {
+    if (!newName.trim()) return;
+    await supabase
+      .from("profiles")
+      .update({ full_name: newName })
+      .eq("id", editUser.id);
+    setEditUser(null);
+    fetchUsers();
+  }
 
-  const filteredUsers = users.filter(user =>
-    user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filtered = users.filter(
+    (u) =>
+      u.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+      u.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const visible = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  const admins = useMemo(
+    () => users.filter((u) => u.role?.trim().toLowerCase() === "admin").length,
+    [users]
+  );
+
+  const students = useMemo(
+    () => users.filter((u) => u.role?.trim().toLowerCase() !== "admin").length,
+    [users]
+  );
 
   return (
-    <div className="flex-1 space-y-8 p-8">
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-foreground">Users</h1>
-          <p className="text-sm text-foreground/60">Manage platform users</p>
+    <div className="space-y-8 p-8">
+      {/* HERO */}
+      <section className="relative overflow-hidden rounded-[32px] border border-border/30 bg-card/25 p-8">
+        <div className="absolute left-0 top-0 h-[220px] w-[220px] rounded-full bg-primary/[0.05] blur-[110px]" />
+        <div className="relative space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary">
+            <Sparkles className="h-4 w-4" />
+            User Management
+          </div>
+          <h1 className="text-5xl font-black">Users Dashboard</h1>
+          <p className="text-foreground/60">
+            Manage users, permissions and platform access.
+          </p>
         </div>
+      </section>
+
+      {/* METRICS */}
+      <div className="grid gap-5 md:grid-cols-3">
+        <Metric icon={<Users />} value={users.length} label="Total Users" />
+        <Metric icon={<ShieldAlert />} value={admins} label="Admins" />
+        <Metric icon={<User2 />} value={students} label="Students" />
       </div>
 
-      {/* Search */}
+      {/* SEARCH */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/50" />
+        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
         <Input
-          placeholder="Search users by name or email..."
-          className="pl-10"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search users"
+          value={search}
+          onChange={(e) => {
+            setPage(1);
+            setSearch(e.target.value);
+          }}
+          className="h-12 pl-11"
         />
       </div>
 
-      {/* Users Table */}
+      {/* LIST */}
       <Card className="border-border/30">
-        <CardHeader>
-          <CardTitle>All Users</CardTitle>
-          <CardDescription>Total: {filteredUsers.length} users</CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Joined Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.full_name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-
-                  <TableCell>{user.role}</TableCell>
-
-                  <TableCell>
-                    {user.created_at
-                      ? new Date(user.created_at).toLocaleDateString()
-                      : '-'}
-                  </TableCell>
-
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-
-                      {/* EDIT */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEditName(user)}
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-
-                      {/* ROLE */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleToggleRole(user)}
-                      >
-                        <ShieldAlert className="h-4 w-4" />
-                      </Button>
-
-                      {/* DELETE */}
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="text-destructive">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete User?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteUser(user.id)}>
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-
+        <CardContent className="p-0">
+          {loading ? (
+            <div className="p-8 text-center">Loading users...</div>
+          ) : visible.length === 0 ? (
+            <div className="p-8 text-center text-foreground/60">
+              No users found
+            </div>
+          ) : (
+            visible.map((user) => (
+              <div
+                key={user.id}
+                className="flex flex-col gap-4 border-b border-border/20 p-6 transition-all hover:bg-primary/[0.03] lg:flex-row lg:items-center lg:justify-between"
+              >
+                <div className="flex gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 font-bold text-primary">
+                    {user.full_name?.[0]?.toUpperCase() || "U"}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">
+                      {user.full_name || "Unnamed User"}
+                    </h3>
+                    <div className="mt-1 flex flex-wrap gap-4 text-sm text-foreground/60">
+                      <div className="flex items-center gap-1">
+                        <Mail className="h-3 w-3" />
+                        {user.email}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {user.created_at
+                          ? new Date(user.created_at).toLocaleDateString()
+                          : "-"}
+                      </div>
                     </div>
-                  </TableCell>
+                  </div>
+                </div>
 
-                </TableRow>
-              ))}
-            </TableBody>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${user.role === "Admin" ? "bg-red-500/10 text-red-500" : "bg-primary/10 text-primary"}`}
+                  >
+                    {user.role}
+                  </span>
 
-          </Table>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => openEdit(user)}
+                    className="border-border/30 bg-background/40 text-foreground transition-all hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => toggleRole(user)}
+                    className="hover:border-yellow-500/30 hover:bg-yellow-500/10 hover:text-yellow-500"
+                  >
+                    <ShieldAlert className="h-4 w-4" />
+                  </Button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="border-border/30 bg-background/95 backdrop-blur-2xl">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete User?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="hover:bg-primary/10 hover:text-foreground">
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(user.id)}
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            ))
+          )}
         </CardContent>
       </Card>
+
+      {/* PAGINATION */}
+      <div className="flex justify-center gap-3">
+        <Button
+          variant="outline"
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
+          <ChevronLeft />
+        </Button>
+        <div className="px-4 py-2">
+          {page}/{totalPages || 1}
+        </div>
+        <Button
+          variant="outline"
+          disabled={page >= totalPages}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          <ChevronRight />
+        </Button>
+      </div>
+
+      {/* EDIT */}
+      <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
+        <DialogContent className="border-border/30 bg-background/95 backdrop-blur-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Name</DialogTitle>
+          </DialogHeader>
+          <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEditUser(null)}
+              className="border-border/30 bg-background/40 text-foreground transition-all hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+            >
+              Cancel
+            </Button>
+            <Button onClick={saveName}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
-  )
+  );
+}
+
+function Metric({ icon, value, label }: any) {
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <div className="text-primary">{icon}</div>
+        <h2 className="mt-4 text-4xl font-black">{value}</h2>
+        <p className="text-foreground/60">{label}</p>
+      </CardContent>
+    </Card>
+  );
 }
