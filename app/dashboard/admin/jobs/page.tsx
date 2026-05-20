@@ -176,50 +176,50 @@ export default function JobsPage() {
 
               <div className="max-h-[75vh] overflow-y-auto pr-3 space-y-5">
                 <div className="grid md:grid-cols-2 gap-4">
-                  <Field label="Company" value={form.company} set={(v) => setForm({ ...form, company: v })} />
-                  <Field label="Role" value={form.title} set={(v) => setForm({ ...form, title: v })} />
-                  <Field label="Location" value={form.location} set={(v) => setForm({ ...form, location: v })} />
-                  <Field label="Experience" value={form.experience} set={(v) => setForm({ ...form, experience: v })} />
+                  <Field label="Company" value={form.company} set={(v:any) => setForm({ ...form, company: v })} />
+                  <Field label="Role" value={form.title} set={(v:any) => setForm({ ...form, title: v })} />
+                  <Field label="Location" value={form.location} set={(v:any) => setForm({ ...form, location: v })} />
+                  <Field label="Experience" value={form.experience} set={(v:any) => setForm({ ...form, experience: v })} />
                 </div>
 
-                <TextBlock label="Description" value={form.description} set={(v) => setForm({ ...form, description: v })} />
+                <TextBlock label="Description" value={form.description} set={(v:any) => setForm({ ...form, description: v })} />
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <SelectBox
                     label="Job Type"
                     value={form.jobType}
-                    set={(v) => setForm({ ...form, jobType: v })}
+                    set={(v:any) => setForm({ ...form, jobType: v })}
                     items={['Full Time', 'Internship', 'Part Time', 'Remote', 'Contract']}
                   />
                   <SelectBox
                     label="Status"
                     value={form.status}
-                    set={(v) => setForm({ ...form, status: v })}
+                    set={(v:any) => setForm({ ...form, status: v })}
                     items={['Draft', 'Active', 'Closed']}
                   />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  <Field label="Apply Link" value={form.applyLink} set={(v) => setForm({ ...form, applyLink: v })} />
-                  <Field label="Category" value={form.category} set={(v) => setForm({ ...form, category: v })} />
+                  <Field label="Apply Link" value={form.applyLink} set={(v:any) => setForm({ ...form, applyLink: v })} />
+                  <Field label="Category" value={form.category} set={(v:any) => setForm({ ...form, category: v })} />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  <Field label="Min LPA" value={form.salaryMin} set={(v) => setForm({ ...form, salaryMin: v })} />
-                  <Field label="Max LPA" value={form.salaryMax} set={(v) => setForm({ ...form, salaryMax: v })} />
+                  <Field label="Min LPA" value={form.salaryMin} set={(v:any) => setForm({ ...form, salaryMin: v })} />
+                  <Field label="Max LPA" value={form.salaryMax} set={(v:any) => setForm({ ...form, salaryMax: v })} />
                 </div>
 
                 <TextBlock
                   label="Requirements"
                   placeholder="React, Node.js, SQL"
                   value={form.requirements}
-                  set={(v) => setForm({ ...form, requirements: v })}
+                  set={(v:any) => setForm({ ...form, requirements: v })}
                 />
                 <TextBlock
                   label="Benefits"
                   placeholder="WFH, Insurance"
                   value={form.benefits}
-                  set={(v) => setForm({ ...form, benefits: v })}
+                  set={(v:any) => setForm({ ...form, benefits: v })}
                 />
 
                 <div className="flex justify-end gap-3">
