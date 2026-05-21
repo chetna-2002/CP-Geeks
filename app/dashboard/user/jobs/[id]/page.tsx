@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import Link from "next/link";
-import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
 
+import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
   ExternalLink,
@@ -16,9 +14,6 @@ import {
   Clock3,
   Sparkles,
   CircleCheck,
-  Lock,
-  X,
-  ArrowRight
 } from "lucide-react";
 
 export default function JobDetailPage() {
@@ -28,24 +23,13 @@ export default function JobDetailPage() {
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  
-  // Auth state for the teaser modal
-  const [user, setUser] = useState<any>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
-
-    // Check if user is logged in
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    checkUser();
-
     if (!id) return;
 
     const fetchJob = async () => {
+      const supabase = createClient();
+
       const { data, error } = await supabase
         .from("jobs")
         .select("*")
@@ -55,6 +39,7 @@ export default function JobDetailPage() {
       if (!error && data) {
         setJob(data);
       }
+
       setLoading(false);
     };
 
@@ -64,23 +49,15 @@ export default function JobDetailPage() {
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
+
     setTimeout(() => {
       setCopied(false);
     }, 2000);
   };
 
-  const handleApplyClick = (e: React.MouseEvent) => {
-    // If not logged in, prevent redirect and show modal
-    if (!user) {
-      e.preventDefault();
-      setShowAuthModal(true);
-    }
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
+      <div className="bg-background">
         <div className="flex items-center justify-center py-40">
           <div className="rounded-2xl border border-border/30 bg-card/40 px-6 py-4 text-foreground/60 backdrop-blur-xl">
             Loading opportunity...
@@ -92,8 +69,7 @@ export default function JobDetailPage() {
 
   if (!job) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
+      <div className="bg-background">
         <div className="flex items-center justify-center py-40">
           <div className="rounded-2xl border border-border/30 bg-card/40 px-6 py-4 text-foreground/60 backdrop-blur-xl">
             Job not found.
@@ -104,11 +80,11 @@ export default function JobDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-
+    <div className="bg-background pb-20">
+      
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/30 py-12 md:py-14">
+        {/* Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute left-1/4 top-0 h-[320px] w-[320px] rounded-full bg-primary/[0.05] blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 h-[280px] w-[280px] rounded-full bg-primary/[0.03] blur-[120px]" />
@@ -117,12 +93,13 @@ export default function JobDetailPage() {
             style={{
               backgroundImage:
                 "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-              backgroundSize: "40px 40px"
+              backgroundSize: "40px 40px",
             }}
           />
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Back */}
           <Button
             variant="ghost"
             onClick={() => router.back()}
@@ -133,24 +110,29 @@ export default function JobDetailPage() {
           </Button>
 
           <div className="max-w-4xl">
+            {/* Badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm">
               <Sparkles className="h-4 w-4" />
               Active Opportunity
             </div>
 
+            {/* Title */}
             <h1 className="mt-5 text-4xl md:text-6xl font-black leading-[1.05] tracking-tight text-foreground">
               {job.title}
             </h1>
 
+            {/* Company */}
             <p className="mt-4 text-xl font-semibold text-primary">
               {job.company}
             </p>
 
+            {/* Subtitle */}
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-foreground/65">
               Engineering opportunity for developers looking to build practical
               experience and work on modern systems.
             </p>
 
+            {/* Meta */}
             <div className="mt-7 flex flex-wrap gap-3">
               {job.location && (
                 <div className="flex items-center gap-2 rounded-xl border border-border/30 bg-card/40 px-3.5 py-2.5 text-sm text-foreground/70 backdrop-blur-xl">
@@ -177,15 +159,18 @@ export default function JobDetailPage() {
         </div>
       </section>
 
-      {/* Main */}
+      {/* Main Content */}
       <section className="py-10 md:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[1fr_340px] items-start">
+            
             {/* Left Content */}
             <div className="space-y-8">
               {/* Description */}
               <div className="rounded-[28px] border border-border/40 bg-card/50 p-6 md:p-7 backdrop-blur-xl">
-                <h2 className="text-2xl font-black text-foreground">Job Description</h2>
+                <h2 className="text-2xl font-black text-foreground">
+                  Job Description
+                </h2>
                 <div className="mt-6 whitespace-pre-line leading-relaxed text-foreground/70">
                   {job.description}
                 </div>
@@ -194,16 +179,50 @@ export default function JobDetailPage() {
               {/* Requirements */}
               {job.requirements?.length > 0 && (
                 <div className="rounded-[28px] border border-border/40 bg-card/50 p-6 md:p-7 backdrop-blur-xl">
-                  <h2 className="text-2xl font-black text-foreground">Requirements</h2>
+                  <h2 className="text-2xl font-black text-foreground">
+                    Requirements
+                  </h2>
                   <div className="mt-7 grid gap-4 md:grid-cols-2">
                     {job.requirements.map((req: string, i: number) => (
-                      <div key={i} className="group relative overflow-hidden rounded-2xl border border-border/30 bg-background/30 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:bg-primary/[0.03]">
+                      <div
+                        key={i}
+                        className="group relative overflow-hidden rounded-2xl border border-border/30 bg-background/30 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:bg-primary/[0.03]"
+                      >
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                         <div className="relative z-10 flex items-start gap-3">
                           <div className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
                             <CircleCheck className="h-3.5 w-3.5" />
                           </div>
-                          <p className="text-sm leading-relaxed text-foreground/75">{req}</p>
+                          <p className="text-sm leading-relaxed text-foreground/75">
+                            {req}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Benefits */}
+              {job.benefits?.length > 0 && (
+                <div className="rounded-[28px] border border-border/40 bg-card/50 p-6 md:p-7 backdrop-blur-xl">
+                  <h2 className="text-2xl font-black text-foreground">
+                    Benefits & Perks
+                  </h2>
+                  <div className="mt-7 grid gap-4 md:grid-cols-2">
+                    {job.benefits.map((benefit: string, i: number) => (
+                      <div
+                        key={i}
+                        className="group relative overflow-hidden rounded-2xl border border-border/30 bg-background/30 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:bg-primary/[0.03]"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        <div className="relative z-10 flex items-start gap-3">
+                          <div className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
+                            <CircleCheck className="h-3.5 w-3.5" />
+                          </div>
+                          <p className="text-sm leading-relaxed text-foreground/75">
+                            {benefit}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -212,36 +231,51 @@ export default function JobDetailPage() {
               )}
             </div>
 
-            {/* Sidebar */}
+            {/* Sidebar Sticky Panel */}
             <div className="space-y-6 lg:sticky lg:top-24">
+              
               {/* Apply Card */}
               <div className="relative overflow-hidden rounded-[28px] border border-border/40 bg-card/50 backdrop-blur-xl">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent" />
                 <div className="relative z-10 p-6">
-                  <p className="text-sm uppercase tracking-wide text-foreground/50">Compensation</p>
+                  <p className="text-sm uppercase tracking-wide text-foreground/50">
+                    Compensation
+                  </p>
                   <h2 className="mt-3 text-4xl font-black text-primary">
-                    {job.salary ? `₹${job.salary.split("-")[0]}L - ₹${job.salary.split("-")[1]}L` : "Competitive"}
+                    {job.salary
+                      ? job.salary.includes("-") 
+                          ? `₹${job.salary.split("-")[0]}L - ₹${job.salary.split("-")[1]}L`
+                          : job.salary
+                      : "Competitive"}
                   </h2>
 
+                  {/* Features */}
                   <div className="mt-5 space-y-2.5">
-                    {["Engineering-focused role", "Modern development environment", "Practical project exposure", "Career growth opportunity"].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 rounded-xl border border-border/20 bg-background/30 px-4 py-3">
+                    {[
+                      "Engineering-focused role",
+                      "Modern development environment",
+                      "Practical project exposure",
+                      "Career growth opportunity",
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 rounded-xl border border-border/20 bg-background/30 px-4 py-3"
+                      >
                         <div className="h-2 w-2 rounded-full bg-primary" />
                         <p className="text-sm text-foreground/70">{item}</p>
                       </div>
                     ))}
                   </div>
 
-                  {/* Dynamic Apply Button */}
+                  {/* Buttons */}
                   {job.apply_link && (
                     <a
-                      href={user ? job.apply_link : "#"}
-                      target={user ? "_blank" : "_self"}
+                      href={job.apply_link}
+                      target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleApplyClick}
                     >
                       <Button className="mt-7 h-12 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-[1.01]">
-                        {user ? <ExternalLink className="mr-2 h-4 w-4" /> : <Lock className="mr-2 h-4 w-4" />}
+                        <ExternalLink className="mr-2 h-4 w-4" />
                         Apply Now
                       </Button>
                     </a>
@@ -257,58 +291,63 @@ export default function JobDetailPage() {
                   </Button>
                 </div>
               </div>
+
+              {/* Details Card */}
+              <div className="rounded-[28px] border border-border/40 bg-card/50 p-6 backdrop-blur-xl">
+                <h3 className="text-xl font-black text-foreground">
+                  Job Details
+                </h3>
+
+                <div className="mt-6 space-y-4">
+                  {job.posted_date && (
+                    <div className="rounded-xl border border-border/20 bg-background/30 p-4">
+                      <p className="text-xs uppercase tracking-wide text-foreground/45">
+                        Posted
+                      </p>
+                      <p className="mt-1 font-semibold text-foreground">
+                        {new Date(job.posted_date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+
+                  {job.deadline && (
+                    <div className="rounded-xl border border-border/20 bg-background/30 p-4">
+                      <p className="text-xs uppercase tracking-wide text-foreground/45">
+                        Deadline
+                      </p>
+                      <p className="mt-1 font-semibold text-foreground">
+                        {new Date(job.deadline).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+
+                  {job.status && (
+                    <div className="rounded-xl border border-border/20 bg-background/30 p-4">
+                      <p className="text-xs uppercase tracking-wide text-foreground/45">
+                        Status
+                      </p>
+                      <p className="mt-1 font-semibold text-primary">
+                        {job.status}
+                      </p>
+                    </div>
+                  )}
+
+                  {job.category && (
+                    <div className="rounded-xl border border-border/20 bg-background/30 p-4">
+                      <p className="text-xs uppercase tracking-wide text-foreground/45">
+                        Category
+                      </p>
+                      <p className="mt-1 font-semibold text-foreground">
+                        {job.category}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* THE AUTH TEASER MODAL */}
-      {showAuthModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm px-4 animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-border/40 bg-card/60 p-8 shadow-2xl backdrop-blur-xl animate-in zoom-in-95 duration-200">
-            
-            <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
-
-            <button 
-              onClick={() => setShowAuthModal(false)}
-              className="absolute right-6 top-6 rounded-full p-2 text-foreground/50 transition-colors hover:bg-background/50 hover:text-foreground outline-none z-20"
-            >
-              <X className="h-4 w-4" />
-            </button>
-
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl border border-primary/20 bg-primary/10 shadow-inner">
-                <Briefcase className="h-10 w-10 text-primary" />
-                <div className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full border-4 border-card bg-background">
-                  <Lock className="h-3.5 w-3.5 text-foreground/60" />
-                </div>
-              </div>
-
-              <h3 className="mt-6 text-2xl font-black tracking-tight text-foreground">
-                Account Required
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-foreground/60">
-                You must have a CP Geeks account to apply opportunities. Create your free account to get started and unlock your potential with CP Geeks.
-              </p>
-
-              <div className="mt-8 flex w-full flex-col gap-3">
-                <Link href="/signup" className="w-full" onClick={() => setShowAuthModal(false)}>
-                  <Button className="h-12 w-full rounded-xl bg-primary font-bold text-primary-foreground shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
-                    Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="/login" className="w-full" onClick={() => setShowAuthModal(false)}>
-                  <Button variant="outline" className="h-12 w-full rounded-xl border border-border/40 bg-background/50 text-foreground backdrop-blur-xl transition-all duration-300 hover:border-primary/30 hover:bg-primary/5 hover:text-primary shadow-none">
-                    I already have an account
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-      )}
     </div>
   );
 }
