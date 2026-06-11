@@ -1,20 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, ChevronLeft, User } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ChevronLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -269,13 +261,14 @@ export default function LoginPage() {
                       Password
                     </Label>
 
-                    <button
+                    <Link
                       type="button"
-                      onClick={handleForgotPassword}
+                      // onClick={handleForgotPassword}
+                      href="/forgot-password"
                       className="text-xs font-medium text-primary hover:underline"
                     >
                       Forgot password?
-                    </button>
+                    </Link>
                   </div>
 
                   <div className="relative">

@@ -72,7 +72,7 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/courses", label: "Courses", isProtected: false },
-    // { href: "/dashboard/user/dsa-sheets", label: "DSA Sheets", isProtected: true },
+    { href: "/dashboard/user/dsa-sheets", label: "DSA Sheets", isProtected: true },
     { href: "/jobs", label: "Jobs", isProtected: false },
     { href: "/instructors", label: "Mentors", isProtected: false },
   ];

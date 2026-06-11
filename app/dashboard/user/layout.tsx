@@ -171,12 +171,12 @@ export default function UserLayout({
   if (loading || !profile) return null;
 
   const navigationItems = [
-    { name: "Live Stream", href: "/dashboard/user", icon: Tv },
-    // {
-    //   name: "DSA Sheets",
-    //   href: "/dashboard/user/dsa-sheets",
-    //   icon: BrainCircuit
-    // },
+    { name: "Dashboard", href: "/dashboard/user", icon: Tv },
+    {
+      name: "DSA Sheets",
+      href: "/dashboard/user/dsa-sheets",
+      icon: BrainCircuit
+    },
     { name: "Jobs", href: "/dashboard/user/jobs", icon: Briefcase }
   ];
 
