@@ -21,6 +21,7 @@ export default function CourseDetailsPage() {
 
   const [course, setCourse] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [purchasing, setPurchasing] = useState(false)
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -41,6 +42,41 @@ export default function CourseDetailsPage() {
 
     fetchCourse()
   }, [params.slug])
+
+  const handlePurchase = async () => {
+  try {
+    setPurchasing(true)
+
+    const response = await fetch("/api/payment/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        courseId: course.id,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.error || "Failed to initiate payment")
+      return
+    }
+
+    if (!data.checkoutUrl) {
+      alert("Checkout URL not received")
+      return
+    }
+
+    window.location.href = data.checkoutUrl
+  } catch (error) {
+    console.error(error)
+    alert("Something went wrong")
+  } finally {
+    setPurchasing(false)
+  }
+}
 
   if (loading) {
     return (
@@ -169,9 +205,13 @@ export default function CourseDetailsPage() {
                   ))}
                 </div>
 
-                <Button className="mt-8 h-12 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-[1.01]">
-                  Enroll Now
-                </Button>
+                <Button
+  onClick={handlePurchase}
+  disabled={purchasing}
+  className="mt-8 h-12 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-[1.01]"
+>
+  {purchasing ? "Redirecting..." : "Enroll Now"}
+</Button>
 
                 <p className="mt-4 text-center text-xs leading-relaxed text-foreground/45">
                   Secure payment integration and enrollment onboarding.
