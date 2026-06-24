@@ -1,22 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { createClient } from "@/utils/supabase/client";
-
-import { Button } from "@/components/ui/button";
-
 import {
   Users,
   BookOpen,
-  ShoppingCart,
   TrendingUp,
   ArrowUpRight,
-  Activity,
-  Sparkles,
-  Eye
+  ShoppingCart,
+  Sparkles
 } from "lucide-react";
-
 import {
   LineChart,
   Line,
@@ -29,82 +22,123 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-const enrollmentData = [
-  { month: "Jan", enrollments: 240 },
-  { month: "Feb", enrollments: 340 },
-  { month: "Mar", enrollments: 280 },
-  { month: "Apr", enrollments: 420 },
-  { month: "May", enrollments: 380 },
-  { month: "Jun", enrollments: 520 }
-];
-
-const recentActivity = [
-  {
-    id: 1,
-    user: "Aarav Sharma",
-    action: "Enrolled in",
-    course: "Master DSA",
-    timestamp: "2 hours ago",
-    type: "enrollment"
-  },
-  {
-    id: 2,
-    user: "Priya Mehta",
-    action: "Purchased",
-    course: "System Design",
-    timestamp: "4 hours ago",
-    type: "purchase"
-  },
-  {
-    id: 3,
-    user: "Rahul Verma",
-    action: "Completed",
-    course: "Full Stack Development",
-    timestamp: "6 hours ago",
-    type: "completion"
-  },
-  {
-    id: 4,
-    user: "Sneha Kapoor",
-    action: "Enrolled in",
-    course: "React Advanced",
-    timestamp: "8 hours ago",
-    type: "enrollment"
-  }
-];
+// const enrollmentData = [
+//   { month: "Jan", enrollments: 240 },
+//   { month: "Feb", enrollments: 340 },
+//   { month: "Mar", enrollments: 280 },
+//   { month: "Apr", enrollments: 420 },
+//   { month: "May", enrollments: 380 },
+//   { month: "Jun", enrollments: 520 }
+// ];
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalUsers: 0,
-    totalCourses: 0
+    totalCourses: 0,
+    totalEnrollments: 0,
+    totalRevenue: 0
   });
 
+  const [enrollmentData, setEnrollmentData] = useState<any[]>([]);
+  const [revenueData, setRevenueData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
-      const supabase = createClient();
+const supabase = createClient();
 
-      try {
-        const [usersResult, coursesResult] = await Promise.all([
-          supabase
-            .from("profiles")
-            .select("*", { count: "exact", head: true })
-            .eq("role", "user"),
+try {
+const [
+usersResult,
+coursesResult,
+enrollmentsResult,
+purchasesResult
+] = await Promise.all([
+supabase
+.from("profiles")
+.select("*", { count: "exact", head: true })
+.eq("role", "user"),
 
-          supabase.from("courses").select("*", { count: "exact", head: true })
-        ]);
+  supabase
+    .from("courses")
+    .select("*", { count: "exact", head: true }),
 
-        setStats({
-          totalUsers: usersResult.count || 0,
-          totalCourses: coursesResult.count || 0
-        });
-      } catch (error) {
-        console.error("Dashboard stats error:", error);
-      }
+  supabase
+    .from("course_enrollments")
+    .select("*", { count: "exact", head: true }),
 
-      setLoading(false);
-    };
+  supabase
+    .from("purchases")
+    .select("amount, created_at")
+    .eq("status", "SUCCESS")
+]);
+
+const revenue =
+  purchasesResult.data?.reduce(
+    (sum, purchase) => sum + purchase.amount,
+    0
+  ) || 0;
+
+setStats({
+  totalUsers: usersResult.count || 0,
+  totalCourses: coursesResult.count || 0,
+  totalEnrollments: enrollmentsResult.count || 0,
+  totalRevenue: revenue
+});
+
+const revenueMap = new Map<string, number>();
+
+purchasesResult.data?.forEach(item => {
+  const month = new Date(item.created_at).toLocaleString("en-US", {
+    month: "short"
+  });
+
+  revenueMap.set(
+    month,
+    (revenueMap.get(month) || 0) + item.amount
+  );
+});
+
+setRevenueData(
+  Array.from(revenueMap.entries()).map(([month, revenue]) => ({
+    month,
+    revenue
+  }))
+);
+
+const { data: enrollments } = await supabase
+  .from("course_enrollments")
+  .select("enrolled_at");
+
+const enrollmentMap = new Map<string, number>();
+
+enrollments?.forEach(item => {
+  const month = new Date(item.enrolled_at).toLocaleString("en-US", {
+    month: "short"
+  });
+
+  enrollmentMap.set(
+    month,
+    (enrollmentMap.get(month) || 0) + 1
+  );
+});
+
+setEnrollmentData(
+  Array.from(enrollmentMap.entries()).map(
+    ([month, enrollments]) => ({
+      month,
+      enrollments
+    })
+  )
+);
+
+} catch (error) {
+console.error("Dashboard stats error:", error);
+}
+
+setLoading(false);
+};
+
 
     fetchDashboardStats();
   }, []);
@@ -116,26 +150,23 @@ export default function AdminDashboard() {
       icon: Users,
       subtitle: "Registered learners"
     },
-
     {
       title: "Total Courses",
       value: stats.totalCourses,
       icon: BookOpen,
       subtitle: "Published programs"
     },
-
     {
-      title: "Platform Activity",
-      value: "Active",
-      icon: Activity,
-      subtitle: "Operational status"
+      title: "Total Enrollments",
+      value: stats.totalEnrollments,
+      icon: ShoppingCart,
+      subtitle: "Course enrollments"
     },
-
     {
-      title: "Growth",
-      value: "Scaling",
+      title: "Total Revenue",
+      value: `₹${stats.totalRevenue.toLocaleString()}`,
       icon: TrendingUp,
-      subtitle: "Platform expansion"
+      subtitle: "Successful payments"
     }
   ];
 
@@ -175,8 +206,7 @@ export default function AdminDashboard() {
               </h1>
 
               <p className="mt-4 max-w-2xl text-base md:text-lg leading-relaxed text-foreground/65">
-                Monitor platform growth, manage courses, and track activity
-                across the CP Geeks ecosystem.
+                Monitor Enrollment Trend, Revenue Analytics and more in real-time.
               </p>
             </div>
           </div>
@@ -290,11 +320,11 @@ export default function AdminDashboard() {
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-black text-foreground">
-                    Platform Growth
+                    Revenue Analytics
                   </h2>
 
                   <p className="mt-1 text-sm text-foreground/55">
-                    Engagement distribution overview
+                    Monthly revenue overview
                   </p>
                 </div>
 
@@ -326,85 +356,6 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-
-        {/* Activity */}
-        <div className="mt-6">
-          <div className="relative overflow-hidden rounded-[28px] border border-border/40 bg-card/50 backdrop-blur-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-transparent" />
-
-            <div className="relative z-10 p-6">
-              {/* Header */}
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <h2 className="text-2xl font-black text-foreground">
-                    Recent Activity
-                  </h2>
-
-                  <p className="mt-1 text-sm text-foreground/55">
-                    Latest platform interactions and enrollments
-                  </p>
-                </div>
-
-                <Button
-                  variant="outline"
-                  className="rounded-xl border-border/30 bg-background/40"
-                >
-                  View All
-                </Button>
-              </div>
-
-              {/* Activity List */}
-              <div className="mt-8 space-y-4">
-                {recentActivity.map(activity =>
-                  <div
-                    key={activity.id}
-                    className="group flex flex-col gap-5 rounded-2xl border border-border/30 bg-background/30 p-5 transition-all duration-300 hover:border-primary/20 hover:bg-primary/[0.03] md:flex-row md:items-center md:justify-between"
-                  >
-                    {/* Left */}
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
-                        <Users className="h-5 w-5" />
-                      </div>
-
-                      <div>
-                        <p className="text-sm leading-relaxed text-foreground/75">
-                          <span className="font-semibold text-foreground">
-                            {activity.user}
-                          </span>{" "}
-                          {activity.action}{" "}
-                          <span className="font-semibold text-primary">
-                            {activity.course}
-                          </span>
-                        </p>
-
-                        <p className="mt-2 text-xs text-foreground/45">
-                          {activity.timestamp}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Right */}
-                    <div
-                      className={`
-                        inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium border
-                        ${activity.type === "enrollment"
-                          ? "border-blue-500/20 bg-blue-500/10 text-blue-400"
-                          : activity.type === "purchase"
-                            ? "border-green-500/20 bg-green-500/10 text-green-400"
-                            : "border-purple-500/20 bg-purple-500/10 text-purple-400"}
-                      `}
-                    >
-                      {activity.type.charAt(0).toUpperCase() +
-                        activity.type.slice(1)}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Insights */}
       </section>
     </div>
   );
