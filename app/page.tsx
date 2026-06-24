@@ -87,8 +87,6 @@ useEffect(() => {
       .eq("is_published", true)
       .order("created_at", { ascending: false });
 
-    console.log("COURSES ERROR:", error);
-    console.log("COURSES DATA:", data);
 
     setCourses(data || []);
   };

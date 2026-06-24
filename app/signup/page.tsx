@@ -43,6 +43,13 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    if (!emailRegex.test(formData.email.trim())) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;

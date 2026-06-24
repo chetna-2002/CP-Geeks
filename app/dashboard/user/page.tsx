@@ -65,7 +65,7 @@ useEffect(() => {
   }
 
   const firstName = profile?.full_name?.split(" ")[0] || "Engineer";
-  console.log("Enrolled Courses:", enrolledCourses);
+  // console.log("Enrolled Courses:", enrolledCourses);
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 pb-20">
       
