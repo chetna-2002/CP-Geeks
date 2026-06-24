@@ -151,7 +151,7 @@ export default function DsaSheetsPage() {
                   )}
 
                   <div className="pt-4 mt-auto">
-                    <Link href={`/dsa-sheets/${sheet.id}`}>
+                    <Link href={`/dashboard/user/dsa-sheets/${sheet.id}`}>
                       <Button className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-md shadow-primary/10 gap-2 group/btn">
                         Start Learning
                         <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
