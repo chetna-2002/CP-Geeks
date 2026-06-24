@@ -1,122 +1,6 @@
-// 'use client'
-
-// import { useEffect } from 'react'
-// import { useRouter } from 'next/navigation'
-// import { useAuth } from '@/hooks/useAuth'
-
-// export default function UserLayout({ children }: { children: React.ReactNode }) {
-//   const { profile, loading } = useAuth()
-//   const router = useRouter()
-
-//   useEffect(() => {
-//     if (!loading) {
-//       if (!profile) router.replace('/login')
-//       else if (profile.role !== 'user') router.replace('/dashboard/admin')
-//     }
-//   }, [profile, loading])
-
-//   if (loading) return null
-
-//   return <>{children}</>
-// }
-
-// "use client";
-
-// import { useEffect } from "react";
-// import { useRouter, usePathname } from "next/navigation";
-// import { useAuth } from "@/hooks/useAuth";
-// import Link from "next/link";
-// import { Tv, BrainCircuit, Briefcase, User, Sparkles } from "lucide-react";
-
-// export default function UserLayout({
-//   children
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   const { profile, loading } = useAuth();
-//   const router = useRouter();
-//   const pathname = usePathname();
-
-//   useEffect(
-//     () => {
-//       if (!loading) {
-//         if (!profile) router.replace("/login");
-//         else if (profile.role !== "Student" && profile.role !== "user") {
-//           router.replace("/dashboard/admin");
-//         }
-//       }
-//     },
-//     [profile, loading, router]
-//   );
-
-//   if (loading || !profile) return null;
-
-//   const navigationItems = [
-//     { name: "Live Stream", href: "/dashboard/user", icon: Tv },
-//     { name: "DSA Sheets", href: "/dsa-sheets", icon: BrainCircuit },
-//     { name: "Jobs", href: "/jobs", icon: Briefcase },
-//     { name: "Profile", href: "/dashboard/user/profile", icon: User }
-//   ];
-
-//   return (
-//     <div className="min-h-screen bg-background text-foreground flex flex-col">
-//       {/* GLOBAL RUNTIME STUDENT NAVBAR */}
-//       <header className="sticky top-0 z-50 border-b border-border/30 bg-background/60 backdrop-blur-xl">
-//         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-//           {/* Logo Brand */}
-//           <Link href="/" className="flex items-center gap-3 group">
-//             <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-black text-primary group-hover:scale-105 transition-all">
-//               CG
-//             </div>
-//             <span className="font-black text-lg tracking-tight">
-//               CP Geeks{" "}
-//               <span className="text-xs text-primary font-medium ml-0.5">
-//                 Portal
-//               </span>
-//             </span>
-//           </Link>
-
-//           {/* Core Navigation Items Hub */}
-//           <nav className="hidden md:flex items-center gap-1">
-//             {navigationItems.map(item => {
-//               const Icon = item.icon;
-//               const isActive = pathname === item.href;
-//               return (
-//                 <Link
-//                   key={item.href}
-//                   href={item.href}
-//                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
-//                     ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
-//                     : "text-foreground/60 hover:text-foreground hover:bg-card/40"}`}
-//                 >
-//                   <Icon className="h-4 w-4" />
-//                   {item.name}
-//                 </Link>
-//               );
-//             })}
-//           </nav>
-
-//           {/* Sync Status / System Connection Stable Indicator */}
-//           <div className="flex items-center gap-2.5">
-//             <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-//             <span className="text-xs font-semibold uppercase tracking-wider text-green-400 font-mono hidden sm:inline-block">
-//               Sync Active
-//             </span>
-//           </div>
-//         </div>
-//       </header>
-
-//       {/* Main Content Mounting Section */}
-//       <main className="flex-1 max-w-7xl w-full mx-auto relative z-10">
-//         {children}
-//       </main>
-//     </div>
-//   );
-// }
-
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/utils/supabase/client";
@@ -129,7 +13,9 @@ import {
   LogOut,
   ChevronDown,
   LayoutDashboard,
-  ShieldAlert
+  ShieldAlert,
+  Menu,
+  X
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -139,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export default function UserLayout({
   children
@@ -149,6 +36,9 @@ export default function UserLayout({
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createClient();
+
+  // Mobile menu state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(
     () => {
@@ -195,19 +85,23 @@ export default function UserLayout({
       <header className="sticky top-0 z-50 border-b border-border/30 bg-background/60 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo Brand Group */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-black text-primary group-hover:scale-105 transition-all">
+          <Link
+            href="/dashboard/user"
+            className="flex items-center gap-3 group"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-black text-primary group-hover:scale-105 transition-all">
               CG
             </div>
-            <span className="font-black text-lg tracking-tight">
+            <span className="font-black text-lg tracking-tight line-clamp-1">
               CP Geeks{" "}
-              <span className="text-xs text-primary font-medium ml-0.5">
+              <span className="text-[10px] sm:text-xs text-primary font-medium ml-0.5">
                 Portal
               </span>
             </span>
           </Link>
 
-          {/* Center Navigation Options */}
+          {/* Center Navigation Options (Desktop) */}
           <nav className="hidden md:flex items-center gap-1">
             {navigationItems.map(item => {
               const Icon = item.icon;
@@ -228,7 +122,7 @@ export default function UserLayout({
           </nav>
 
           {/* DYNAMIC USER AVATAR & DROPDOWN MENU */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="hidden sm:flex flex-col text-right">
               <span className="text-sm font-semibold leading-none">
                 {profile.full_name || "Unnamed Student"}
@@ -244,7 +138,7 @@ export default function UserLayout({
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 font-bold text-sm text-primary transition-transform group-hover:scale-105">
                     {userInitials}
                   </div>
-                  <ChevronDown className="h-4 w-4 text-foreground/40 group-hover:text-foreground transition-colors" />
+                  <ChevronDown className="h-4 w-4 text-foreground/40 group-hover:text-foreground transition-colors hidden sm:block" />
                 </div>
               </DropdownMenuTrigger>
 
@@ -260,6 +154,7 @@ export default function UserLayout({
                   <Link
                     href="/dashboard/user/profile"
                     className="flex items-center gap-2 w-full"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <User className="h-4 w-4" /> Profile Settings
                   </Link>
@@ -290,8 +185,44 @@ export default function UserLayout({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Mobile Menu Toggle Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden h-9 w-9 rounded-xl border border-border/30 bg-card/40 backdrop-blur-xl transition-all hover:border-primary/20 hover:bg-primary/[0.06]"
+            >
+              {isMobileMenuOpen
+                ? <X className="h-4 w-4" />
+                : <Menu className="h-4 w-4" />}
+            </Button>
           </div>
         </div>
+
+        {/* Mobile Navigation Dropdown */}
+        {isMobileMenuOpen &&
+          <div className="md:hidden absolute top-16 left-0 right-0 border-b border-border/30 bg-background/95 px-4 py-4 backdrop-blur-xl shadow-xl animate-in slide-in-from-top-2">
+            <nav className="flex flex-col gap-2">
+              {navigationItems.map(item => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl transition-all duration-200 ${isActive
+                      ? "bg-primary/10 text-primary border border-primary/20"
+                      : "text-foreground/70 hover:text-foreground hover:bg-card/40"}`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>}
       </header>
 
       {/* Main Content Mounting Grid */}

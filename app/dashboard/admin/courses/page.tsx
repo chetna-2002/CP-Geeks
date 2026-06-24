@@ -46,8 +46,6 @@ import {
   Sparkles,
   IndianRupee,
   Users,
-  Layers3,
-  Clock3
 } from "lucide-react";
 
 export default function CoursesPage() {
@@ -118,23 +116,17 @@ export default function CoursesPage() {
 
   const resetForm = () => {
     setEditingId(null);
-
     setTitle("");
     setTagline("");
     setDescription("");
-
     setPrice("");
-
     setDuration("");
     setCategory("");
     setLevel("");
     setCohortType("");
     setLanguage("English");
-
     setThumbnailUrl("");
-
     setInstructor("");
-
     setWhatYouLearn("");
     setFeatures("");
     setRoadmap("");
@@ -159,29 +151,18 @@ export default function CoursesPage() {
       title,
       tagline,
       description,
-
       price: Number(price),
-
       duration,
       category,
       level,
-
       cohort_type: cohortType,
-
       language,
-
       thumbnail_url: thumbnailUrl,
-
       instructor_id: instructor || null,
-
       slug: slugify(title),
-
       what_you_learn: parseLines(whatYouLearn),
-
       features: parseLines(features),
-
       roadmap: parseLines(roadmap),
-
       requirements: parseLines(requirements)
     };
 
@@ -209,41 +190,41 @@ export default function CoursesPage() {
   );
 
   const COURSE_CATEGORIES = [
-  {
-    value: "dsa",
-    label: "DSA"
-  },
+    {
+      value: "dsa",
+      label: "DSA"
+    },
 
-  {
-    value: "web",
-    label: "Web Development"
-  },
+    {
+      value: "web",
+      label: "Web Development"
+    },
 
-  {
-    value: "system-design",
-    label: "System Design"
-  },
+    {
+      value: "system-design",
+      label: "System Design"
+    },
 
-  {
-    value: "data-science",
-    label: "Data Science"
-  },
+    {
+      value: "data-science",
+      label: "Data Science"
+    },
 
-  {
-    value: "cloud",
-    label: "Cloud"
-  },
+    {
+      value: "cloud",
+      label: "Cloud"
+    },
 
-  {
-    value: "mobile",
-    label: "Mobile"
-  },
+    {
+      value: "mobile",
+      label: "Mobile"
+    },
 
-  {
-    value: "ai",
-    label: "Artificial Intelligence"
-  }
-];
+    {
+      value: "ai",
+      label: "Artificial Intelligence"
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -354,14 +335,14 @@ export default function CoursesPage() {
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 className="
-                    min-h-[180px]
-                    resize-none
-                    rounded-xl
-                    border-border/40
-                    bg-background/70
-                    shadow-inner
-                    shadow-black/20
-                  "
+                                  min-h-[180px]
+                                  resize-none
+                                  rounded-xl
+                                  border-border/40
+                                  bg-background/70
+                                  shadow-inner
+                                  shadow-black/20
+                                "
                               />
                             </div>
                           </div>
@@ -406,51 +387,30 @@ export default function CoursesPage() {
                             </div>
 
                             <div className="space-y-2">
+                              <Label>Category</Label>
 
-  <Label>
+                              <Select
+                                value={category}
+                                onValueChange={setCategory}
+                              >
+                                <SelectTrigger
+                                  className="border-border/30 bg-background/50"
+                                >
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
 
-    Category
-
-  </Label>
-
-  <Select
-    value={category}
-    onValueChange={setCategory}
-  >
-
-    <SelectTrigger
-      className="
-        border-border/30
-        bg-background/50
-      "
-    >
-
-      <SelectValue
-        placeholder="Select category"
-      />
-
-    </SelectTrigger>
-
-    <SelectContent>
-
-      {COURSE_CATEGORIES.map((item) => (
-
-        <SelectItem
-          key={item.value}
-          value={item.value}
-        >
-
-          {item.label}
-
-        </SelectItem>
-
-      ))}
-
-    </SelectContent>
-
-  </Select>
-
-</div>
+                                <SelectContent>
+                                  {COURSE_CATEGORIES.map((item) => (
+                                    <SelectItem
+                                      key={item.value}
+                                      value={item.value}
+                                    >
+                                      {item.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
 
                             <div className="space-y-2">
                               <Label>Instructor</Label>

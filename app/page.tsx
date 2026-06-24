@@ -78,21 +78,20 @@ export default function Home() {
   }, [supabase]);
 
   /* Fetch Courses */
-  /* Fetch Courses */
-useEffect(() => {
-  const loadCourses = async () => {
-    const { data, error } = await supabase
-      .from("courses")
-      .select(`*, instructors (id, name)`)
-      .eq("is_published", true)
-      .order("created_at", { ascending: false });
+  useEffect(() => {
+    const loadCourses = async () => {
+      const { data, error } = await supabase
+        .from("courses")
+        .select(`*, instructors (id, name)`)
+        .eq("is_published", true)
+        .order("created_at", { ascending: false });
 
 
-    setCourses(data || []);
-  };
+      setCourses(data || []);
+    };
 
-  loadCourses();
-}, [supabase]);
+    loadCourses();
+  }, [supabase]);
 
   /* Fetch Instructors */
   useEffect(() => {
@@ -135,11 +134,11 @@ useEffect(() => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-border/30 min-h-[92vh] flex items-center">
+      <section className="relative overflow-hidden border-b border-border/30 min-h-[92vh] flex items-center py-12 md:py-0">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 h-[500px] w-[500px] bg-primary/20 blur-3xl rounded-full animate-pulse" />
           <div className="absolute bottom-0 right-0 h-[450px] w-[450px] bg-primary/10 blur-3xl rounded-full animate-pulse" style={{ animationDelay: "1s" }} />
@@ -148,43 +147,43 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-            <div className="space-y-8 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/10 text-primary text-sm font-medium backdrop-blur-sm animate-scale-in">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            <div className="space-y-8 text-center lg:text-left pt-6">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-primary/20 bg-primary/10 text-primary text-xs sm:text-sm font-medium backdrop-blur-sm animate-scale-in mx-auto lg:mx-0">
                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                 Cohort Based Learning Platform
               </div>
 
               <div className="space-y-6">
-                <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-balance animate-slide-down">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.1] text-balance animate-slide-down">
                   Become a<br />
                   <span className="bg-gradient-to-r from-primary via-white to-primary/70 bg-clip-text text-transparent animate-gradient bg-[length:200%_200%]">
                     Top 1% Engineer
                   </span>
                 </h1>
-                <p className="text-lg md:text-xl text-foreground/70 max-w-2xl leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                   Master DSA, Full Stack, System Design, and interview preparation through live mentorship, real projects, and structured learning.
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 pt-2">
-                <Link href="/courses">
-                  <Button size="lg" className="h-14 px-8 text-base font-semibold gap-2 rounded-xl bg-primary hover:bg-primary/90 hover:scale-105 transition-all shadow-lg shadow-primary/20">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                <Link href="/courses" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-base font-semibold gap-2 rounded-xl bg-primary hover:bg-primary/90 hover:scale-105 transition-all shadow-lg shadow-primary/20">
                     Explore Courses
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 pt-6 max-w-xl mx-auto lg:mx-0">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pt-6 max-w-xl mx-auto lg:mx-0">
                 {[
                   { value: "100+", label: "Students" },
                   { value: "15+", label: "Projects" },
                   { value: "24/7", label: "Support" }
                 ].map((item, i) => (
-                  <div key={i} className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-5 hover:border-primary/30 transition-all hover:-translate-y-1">
-                    <p className="text-2xl md:text-3xl font-bold text-foreground">{item.value}</p>
-                    <p className="text-sm text-foreground/60 mt-1">{item.label}</p>
+                  <div key={i} className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-3 sm:p-5 hover:border-primary/30 transition-all hover:-translate-y-1">
+                    <p className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">{item.value}</p>
+                    <p className="text-xs sm:text-sm text-foreground/60 mt-1">{item.label}</p>
                   </div>
                 ))}
               </div>
@@ -230,11 +229,11 @@ useEffect(() => {
                   </div>
                 </div>
 
-                <div className="absolute -top-6 -left-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-md px-5 py-4 shadow-xl animate-float">
+                <div className="absolute -top-6 -left-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-md px-5 py-4 shadow-xl animate-float hidden xl:block">
                   <p className="text-sm text-foreground/60">Interview Focused</p>
                   <p className="text-lg font-bold">FAANG Ready</p>
                 </div>
-                <div className="absolute -bottom-6 -right-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-md px-5 py-4 shadow-xl animate-float" style={{ animationDelay: "1s" }}>
+                <div className="absolute -bottom-6 -right-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-md px-5 py-4 shadow-xl animate-float hidden xl:block" style={{ animationDelay: "1s" }}>
                   <p className="text-sm text-foreground/60">Learning Mode</p>
                   <p className="text-lg font-bold">Live Cohorts</p>
                 </div>
@@ -245,7 +244,7 @@ useEffect(() => {
       </section>
 
       {/* Roadmap Section */}
-      <section className="relative border-b border-border/30 py-24 overflow-hidden" data-scroll-animate id="roadmap-section">
+      <section className="relative border-b border-border/30 py-16 sm:py-24 overflow-hidden" data-scroll-animate id="roadmap-section">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 left-1/4 h-[350px] w-[350px] rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute bottom-0 right-1/4 h-[350px] w-[350px] rounded-full bg-primary/5 blur-3xl" />
@@ -253,23 +252,23 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+          <div className="text-center mb-16 sm:mb-20 space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs sm:text-sm text-primary font-medium backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Structured Learning Path
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground">
               From Beginner to
-              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent"> Top Engineer</span>
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent block sm:inline"> Top Engineer</span>
             </h2>
-            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
               A carefully designed roadmap covering problem solving, development, system design, projects, and interview preparation.
             </p>
           </div>
 
           <div className="relative">
             <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-primary/30 to-transparent lg:block" />
-            <div className="space-y-10">
+            <div className="space-y-8 sm:space-y-10">
               {roadmapSteps.map((step, i) => {
                 const Icon = step.icon;
                 const isVisible = visibleElements.has(`roadmap-${i}`);
@@ -279,23 +278,23 @@ useEffect(() => {
                     key={i}
                     id={`roadmap-${i}`}
                     data-scroll-animate
-                    className={`relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${isVisible ? "animate-slide-up" : "opacity-0"}`}
+                    className={`relative grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center ${isVisible ? "animate-slide-up" : "opacity-0"}`}
                     style={{ animationDelay: isVisible ? `${i * 120}ms` : "0ms" }}
                   >
                     <div className={`${i % 2 === 0 ? "lg:text-right lg:pr-16" : "lg:order-2 lg:pl-16"}`}>
-                      <div className="group relative overflow-hidden rounded-3xl border border-border/40 bg-card/50 backdrop-blur-xl p-8 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+                      <div className="group relative overflow-hidden rounded-3xl border border-border/40 bg-card/50 backdrop-blur-xl p-6 sm:p-8 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative z-10">
-                          <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <Icon className="h-7 w-7" />
+                          <div className="mb-5 inline-flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                            <Icon className="h-6 w-6 sm:h-7 sm:w-7" />
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-2 sm:space-y-3">
                             <div className="flex items-center gap-3 justify-start lg:justify-end">
-                              <span className="text-sm font-medium text-primary">Step {i + 1}</span>
-                              <div className="h-px w-10 bg-primary/30" />
+                              <span className="text-xs sm:text-sm font-medium text-primary">Step {i + 1}</span>
+                              <div className="h-px w-10 bg-primary/30 hidden sm:block" />
                             </div>
-                            <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
-                            <p className="text-foreground/65 leading-relaxed">{step.description}</p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
+                            <p className="text-sm sm:text-base text-foreground/65 leading-relaxed">{step.description}</p>
                           </div>
                         </div>
                       </div>
@@ -317,7 +316,7 @@ useEffect(() => {
       </section>
 
       {/* Premium Placements Wall */}
-      <section className="relative border-b border-border/30 py-24 overflow-hidden">
+      <section className="relative border-b border-border/30 py-16 sm:py-24 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 left-1/3 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute bottom-0 right-1/4 h-[350px] w-[350px] rounded-full bg-primary/5 blur-3xl" />
@@ -325,13 +324,13 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+          <div className="text-center mb-12 sm:mb-16 space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs sm:text-sm text-primary font-medium backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Student Success Stories
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">Recent Placements</h2>
-            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground">Recent Placements</h2>
+            <p className="text-base sm:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
               Our learners are building careers at fast-growing startups and top product companies through consistent mentorship and structured preparation.
             </p>
           </div>
@@ -341,33 +340,33 @@ useEffect(() => {
               <div className="marquee mask-fade">
                 <div className="marquee-track">
                   {[...placements, ...placements].map((p, i) => (
-                    <div key={i} className="group relative min-w-[300px] h-[220px] rounded-3xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+                    <div key={i} className="group relative min-w-[260px] sm:min-w-[300px] h-[180px] sm:h-[220px] rounded-3xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
                       <img src={`${p.image_url}?auto=format&fit=crop&w=900&q=80`} alt={p.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                         <div className="absolute -left-40 top-0 h-full w-24 rotate-12 bg-white/10 blur-2xl animate-shine" />
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
                         <div className="space-y-1">
-                          <h3 className="text-lg font-bold text-white">{p.name}</h3>
-                          <p className="text-sm text-white/70">Placed at {p.company}</p>
+                          <h3 className="text-base sm:text-lg font-bold text-white">{p.name}</h3>
+                          <p className="text-xs sm:text-sm text-white/70">Placed at {p.company}</p>
                         </div>
                       </div>
-                      <div className="absolute top-4 right-4 rounded-full border border-white/10 bg-black/40 backdrop-blur-md px-3 py-1 text-xs text-white/80">Placement</div>
+                      <div className="absolute top-4 right-4 rounded-full border border-white/10 bg-black/40 backdrop-blur-md px-3 py-1 text-[10px] sm:text-xs text-white/80">Placement</div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="marquee mask-fade mt-8 reverse">
+              <div className="marquee mask-fade mt-6 sm:mt-8 reverse">
                 <div className="marquee-track">
                   {[...placements, ...placements].map((p, i) => (
-                    <div key={i} className="group relative min-w-[260px] h-[180px] rounded-3xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10">
+                    <div key={i} className="group relative min-w-[220px] sm:min-w-[260px] h-[140px] sm:h-[180px] rounded-3xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10">
                       <img src={`${p.image_url}?auto=format&fit=crop&w=800&q=80`} alt={p.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="text-base font-semibold text-white">{p.name}</h3>
-                        <p className="text-xs text-white/70">{p.company}</p>
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                        <h3 className="text-sm sm:text-base font-semibold text-white">{p.name}</h3>
+                        <p className="text-[10px] sm:text-xs text-white/70">{p.company}</p>
                       </div>
                     </div>
                   ))}
@@ -379,7 +378,7 @@ useEffect(() => {
       </section>
 
       {/* Featured Courses Section */}
-      <section className="relative border-b border-border/30 py-24 overflow-hidden" data-scroll-animate id="courses-section">
+      <section className="relative border-b border-border/30 py-16 sm:py-24 overflow-hidden" data-scroll-animate id="courses-section">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 right-0 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute bottom-0 left-0 h-[350px] w-[350px] rounded-full bg-primary/5 blur-3xl" />
@@ -387,96 +386,96 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+          <div className="text-center mb-16 sm:mb-20 space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs sm:text-sm text-primary font-medium backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Career Focused Learning
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground">
               Featured
-              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent"> Courses</span>
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent block sm:inline"> Courses</span>
             </h2>
-            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
               Industry-aligned programs designed to help you crack interviews, build real-world projects, and grow into a confident engineer.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-  {courses.map((course, i) => {
-    const isVisible = visibleElements.has(`course-${course.id}`)
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+            {courses.map((course, i) => {
+              const isVisible = visibleElements.has(`course-${course.id}`);
 
-    const categoryColors: any = {
-      dsa: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-      web: "bg-green-500/10 text-green-400 border-green-500/20",
-      ai: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-      cloud: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
-      mobile: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-      "system-design": "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-      "data-science": "bg-pink-500/10 text-pink-400 border-pink-500/20",
-    }
+              const categoryColors: any = {
+                dsa: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+                web: "bg-green-500/10 text-green-400 border-green-500/20",
+                ai: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+                cloud: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+                mobile: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+                "system-design": "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+                "data-science": "bg-pink-500/10 text-pink-400 border-pink-500/20",
+              };
 
-    return (
-      <div
-        key={course.id}
-        id={`course-${course.id}`}
-        data-scroll-animate
-        className={`group relative flex flex-col overflow-hidden rounded-[28px] border border-border/30 bg-card/50 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${isVisible ? "animate-slide-up" : "opacity-0"}`}
-        style={{ animationDelay: `${i * 120}ms` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              return (
+                <div
+                  key={course.id}
+                  id={`course-${course.id}`}
+                  data-scroll-animate
+                  className={`group relative flex flex-col overflow-hidden rounded-[28px] border border-border/30 bg-card/50 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${isVisible ? "animate-slide-up" : "opacity-0"}`}
+                  style={{ animationDelay: `${i * 120}ms` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        <div className="relative z-10 flex items-center justify-between px-6 pt-6">
-          <div className={`rounded-full border px-3 py-1 text-xs font-semibold ${categoryColors[course.category] || "bg-primary/10 text-primary border-primary/20"}`}>
-            {course.category?.replace("-", " ")?.toUpperCase()}
+                  <div className="relative z-10 flex items-center justify-between px-6 pt-6">
+                    <div className={`rounded-full border px-3 py-1 text-[10px] sm:text-xs font-semibold ${categoryColors[course.category] || "bg-primary/10 text-primary border-primary/20"}`}>
+                      {course.category?.replace("-", " ")?.toUpperCase()}
+                    </div>
+                    <div className="rounded-full border border-border/20 bg-background/40 px-3 py-1 text-[10px] sm:text-xs text-foreground/60">
+                      {course.duration || "Self Paced"}
+                    </div>
+                  </div>
+
+                  <div className="relative z-10 flex-1 flex flex-col p-6">
+                    <h3 className="text-xl sm:text-2xl font-black leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                      {course.title}
+                    </h3>
+                    <p className="mt-3 sm:mt-4 text-sm leading-relaxed text-foreground/65 line-clamp-4 min-h-[80px] sm:min-h-[88px]">
+                      {course.tagline || course.description}
+                    </p>
+
+                    <div className="mt-4 sm:mt-5 flex flex-wrap gap-2">
+                      {(course.what_you_learn || []).slice(0, 3).map((item: string, idx: number) => (
+                        <div key={idx} className="rounded-full border border-border/20 bg-background/30 px-3 py-1 text-[10px] sm:text-xs text-foreground/70">
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 sm:mt-5 rounded-2xl border border-border/20 bg-background/30 p-4">
+                      <p className="text-[10px] sm:text-xs text-foreground/50">Level</p>
+                      <p className="font-semibold text-sm sm:text-base">{course.level || "Beginner"}</p>
+                    </div>
+
+                    <div className="mt-auto pt-6 sm:pt-8 flex flex-row items-end justify-between">
+                      <div>
+                        <p className="text-[10px] sm:text-xs uppercase text-foreground/50">Starting From</p>
+                        <p className="text-2xl sm:text-3xl font-black">₹{course.price?.toLocaleString()}</p>
+                      </div>
+                      <Link href={`/courses/${course.slug}`}>
+                        <Button size="lg" className="rounded-xl px-4 sm:px-6 gap-2">
+                          Explore
+                          <ArrowRight className="h-4 w-4 hidden sm:block" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="rounded-full border border-border/20 bg-background/40 px-3 py-1 text-xs text-foreground/60">
-            {course.duration || "Self Paced"}
-          </div>
-        </div>
-
-        <div className="relative z-10 flex-1 flex flex-col p-6">
-          <h3 className="text-2xl font-black leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-            {course.title}
-          </h3>
-          <p className="mt-4 text-sm leading-relaxed text-foreground/65 line-clamp-4 min-h-[88px]">
-            {course.tagline || course.description}
-          </p>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {(course.what_you_learn || []).slice(0, 3).map((item: string, idx: number) => (
-              <div key={idx} className="rounded-full border border-border/20 bg-background/30 px-3 py-1 text-xs text-foreground/70">
-                {item}
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-5 rounded-2xl border border-border/20 bg-background/30 p-4">
-            <p className="text-xs text-foreground/50">Level</p>
-            <p className="font-semibold">{course.level || "Beginner"}</p>
-          </div>
-
-          <div className="mt-auto pt-8 flex items-end justify-between">
-            <div>
-              <p className="text-xs uppercase text-foreground/50">Starting From</p>
-              <p className="text-3xl font-black">₹{course.price?.toLocaleString()}</p>
-            </div>
-            <Link href={`/courses/${course.slug}`}>
-              <Button size="lg" className="rounded-xl px-6 gap-2">
-                Explore
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  })}
-</div>
         </div>
       </section>
 
       {/* Why Choose CP Geeks */}
-      <section className="relative border-b border-border/30 py-24 overflow-hidden" data-scroll-animate id="features-section">
+      <section className="relative border-b border-border/30 py-16 sm:py-24 overflow-hidden" data-scroll-animate id="features-section">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 left-1/4 h-[320px] w-[320px] rounded-full bg-primary/[0.05] blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 h-[280px] w-[280px] rounded-full bg-primary/[0.03] blur-[120px]" />
@@ -484,21 +483,21 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+          <div className="text-center mb-12 sm:mb-16 space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs sm:text-sm text-primary font-medium backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Built for Serious Engineers
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground">
               Why Choose
-              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent"> CP Geeks</span>
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent block sm:inline"> CP Geeks</span>
             </h2>
-            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
               A focused ecosystem for engineers who want structured growth, practical skills, mentorship, and real interview preparation.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[
               { icon: Code2, title: "Structured Learning Paths", description: "Roadmaps designed to take you from beginner concepts to advanced engineering topics step-by-step." },
               { icon: Users, title: "Live Mentorship", description: "Interactive sessions, doubt solving, and mentorship focused on consistent improvement." },
@@ -518,18 +517,18 @@ useEffect(() => {
                   key={i}
                   id={`feature-${i}`}
                   data-scroll-animate
-                  className={`group relative overflow-hidden rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl p-6 transition-all duration-500 hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${isVisible ? "animate-slide-up" : "opacity-0"}`}
+                  className={`group relative overflow-hidden rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl p-5 sm:p-6 transition-all duration-500 hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${isVisible ? "animate-slide-up" : "opacity-0"}`}
                   style={{ animationDelay: isVisible ? `${i * 70}ms` : "0ms" }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/15">
-                    <Icon className="h-6 w-6" />
+                  <div className="relative z-10 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/15">
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                   </div>
-                  <div className="relative z-10 mt-6">
-                    <h3 className="text-xl font-bold text-foreground transition-colors group-hover:text-primary">{item.title}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-foreground/65">{item.description}</p>
+                  <div className="relative z-10 mt-5 sm:mt-6">
+                    <h3 className="text-lg sm:text-xl font-bold text-foreground transition-colors group-hover:text-primary">{item.title}</h3>
+                    <p className="mt-2 sm:mt-3 text-sm leading-relaxed text-foreground/65">{item.description}</p>
                   </div>
-                  <div className="relative z-10 mt-6 flex items-center gap-2 text-sm text-primary">
+                  <div className="relative z-10 mt-5 sm:mt-6 flex items-center gap-2 text-xs sm:text-sm text-primary">
                     <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                     <span>Focused Learning Experience</span>
                   </div>
@@ -542,7 +541,7 @@ useEffect(() => {
       </section>
 
       {/* Mentors Section */}
-      <section className="relative border-b border-border/30 py-24 overflow-hidden" data-scroll-animate id="instructors-section">
+      <section className="relative border-b border-border/30 py-16 sm:py-24 overflow-hidden" data-scroll-animate id="instructors-section">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 left-1/4 h-[320px] w-[320px] rounded-full bg-primary/[0.05] blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 h-[280px] w-[280px] rounded-full bg-primary/[0.03] blur-[120px]" />
@@ -550,16 +549,16 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+          <div className="text-center mb-12 sm:mb-16 space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs sm:text-sm text-primary font-medium backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Core Mentorship Team
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground">
               Learn from
-              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent"> Featured Mentors</span>
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent block sm:inline"> Featured Mentors</span>
             </h2>
-            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
               Practical mentorship and engineering guidance focused on long-term growth, consistency, and real-world learning.
             </p>
           </div>
@@ -577,40 +576,40 @@ useEffect(() => {
                   style={{ animationDelay: isVisible ? `${i * 100}ms` : "0ms" }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <div className="relative h-24 border-b border-border/20 bg-gradient-to-br from-primary/[0.08] via-primary/[0.03] to-transparent">
+                  <div className="relative h-20 sm:h-24 border-b border-border/20 bg-gradient-to-br from-primary/[0.08] via-primary/[0.03] to-transparent">
                     <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
-                    <div className="absolute right-5 top-5 rounded-full border border-primary/20 bg-background/50 px-3 py-1 text-xs font-medium text-primary backdrop-blur-md">Mentor</div>
+                    <div className="absolute right-4 sm:right-5 top-4 sm:top-5 rounded-full border border-primary/20 bg-background/50 px-3 py-1 text-[10px] sm:text-xs font-medium text-primary backdrop-blur-md">Mentor</div>
                   </div>
 
-                  <div className="relative z-10 flex flex-1 flex-col p-6">
-                    <div className="-mt-14">
-                      <img src={instructor.image_url} alt={instructor.name} className="h-24 w-24 rounded-full border-4 border-background object-cover shadow-xl" />
-                      <div className="mt-5">
-                        <h3 className="text-2xl font-bold text-foreground transition-colors group-hover:text-primary">{instructor.name}</h3>
-                        <p className="mt-1 text-sm font-semibold text-primary">{instructor.role}</p>
+                  <div className="relative z-10 flex flex-1 flex-col p-5 sm:p-6">
+                    <div className="-mt-12 sm:-mt-14">
+                      <img src={instructor.image_url} alt={instructor.name} className="h-20 w-20 sm:h-24 sm:w-24 rounded-full border-4 border-background object-cover shadow-xl" />
+                      <div className="mt-4 sm:mt-5">
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground transition-colors group-hover:text-primary">{instructor.name}</h3>
+                        <p className="mt-1 text-xs sm:text-sm font-semibold text-primary">{instructor.role}</p>
                       </div>
                     </div>
 
-                    <div className="mt-6">
+                    <div className="mt-5 sm:mt-6">
                       <p className="text-sm leading-relaxed text-foreground/60">{instructor.bio}</p>
-                      <div className="mt-5 rounded-2xl border border-border/20 bg-background/30 p-4">
-                        <p className="text-sm leading-relaxed text-foreground/75">{instructor.description}</p>
+                      <div className="mt-4 sm:mt-5 rounded-2xl border border-border/20 bg-background/30 p-3 sm:p-4">
+                        <p className="text-xs sm:text-sm leading-relaxed text-foreground/75">{instructor.description}</p>
                       </div>
                     </div>
 
                     <div className="flex-1" />
 
-                    <div className="mt-4 border-t border-border/20 pt-5">
+                    <div className="mt-4 border-t border-border/20 pt-4 sm:pt-5">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs uppercase tracking-wide text-foreground/50">Learners Mentored</p>
-                          <p className="mt-1 text-2xl font-black text-foreground">{instructor.students?.toLocaleString()}+</p>
+                          <p className="text-[10px] sm:text-xs uppercase tracking-wide text-foreground/50">Learners Mentored</p>
+                          <p className="mt-1 text-xl sm:text-2xl font-black text-foreground">{instructor.students?.toLocaleString()}+</p>
                         </div>
                       </div>
 
-                      <div className="mt-5 flex flex-wrap gap-2">
+                      <div className="mt-4 sm:mt-5 flex flex-wrap gap-2">
                         {["Mentorship", "Projects", "Career Growth"].map((tag, idx) => (
-                          <div key={idx} className="rounded-full border border-border/20 bg-background/40 px-3 py-1.5 text-xs text-foreground/65">
+                          <div key={idx} className="rounded-full border border-border/20 bg-background/40 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs text-foreground/65">
                             {tag}
                           </div>
                         ))}
@@ -626,7 +625,7 @@ useEffect(() => {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative border-b border-border/30 py-24 overflow-hidden" data-scroll-animate id="faq-section">
+      <section className="relative border-b border-border/30 py-16 sm:py-24 overflow-hidden" data-scroll-animate id="faq-section">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 left-1/4 h-[320px] w-[320px] rounded-full bg-primary/[0.05] blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 h-[280px] w-[280px] rounded-full bg-primary/[0.03] blur-[120px]" />
@@ -634,21 +633,21 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+          <div className="text-center mb-12 sm:mb-16 space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs sm:text-sm text-primary font-medium backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Common Questions
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground">
               Frequently Asked
-              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent"> Questions</span>
+              <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent block sm:inline"> Questions</span>
             </h2>
-            <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed">
               Everything you need to know about learning, mentorship, live cohorts, and the CP Geeks experience.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 sm:gap-8 items-start">
             <div className="space-y-4">
               {faqs.map((faq, i) => {
                 const isVisible = visibleElements.has(`faq-${i}`);
@@ -661,25 +660,25 @@ useEffect(() => {
                     className={`group relative overflow-hidden rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl transition-all duration-500 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 ${isVisible ? "animate-slide-up" : "opacity-0"}`}
                     style={{ animationDelay: isVisible ? `${i * 70}ms` : "0ms" }}
                   >
-                    <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="flex w-full items-center justify-between px-6 py-5 text-left transition-all duration-300 hover:bg-primary/[0.03]">
-                      <div className="flex items-start gap-4">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-semibold text-primary">
+                    <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="flex w-full items-center justify-between px-4 sm:px-6 py-4 sm:py-5 text-left transition-all duration-300 hover:bg-primary/[0.03]">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-xs sm:text-sm font-semibold text-primary">
                           {String(i + 1).padStart(2, "0")}
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-primary">{faq.q}</h3>
+                          <h3 className="text-base sm:text-lg font-semibold text-foreground transition-colors group-hover:text-primary">{faq.q}</h3>
                         </div>
                       </div>
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl border border-border/30 bg-background/40 text-foreground/60 transition-all duration-300 ${openFaq === i ? "rotate-180 border-primary/20 bg-primary/10 text-primary" : ""}`}>
+                      <div className={`flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-border/30 bg-background/40 text-foreground/60 transition-all duration-300 ml-2 ${openFaq === i ? "rotate-180 border-primary/20 bg-primary/10 text-primary" : ""}`}>
                         ▼
                       </div>
                     </button>
 
                     <div className={`grid transition-all duration-500 ease-in-out ${openFaq === i ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                       <div className="overflow-hidden">
-                        <div className="border-t border-border/20 px-6 pb-6 pt-5">
-                          <div className="ml-[52px]">
-                            <p className="leading-relaxed text-foreground/70">{faq.a}</p>
+                        <div className="border-t border-border/20 px-4 sm:px-6 pb-4 sm:pb-6 pt-4 sm:pt-5">
+                          <div className="ml-[44px] sm:ml-[52px]">
+                            <p className="text-sm sm:text-base leading-relaxed text-foreground/70">{faq.a}</p>
                           </div>
                         </div>
                       </div>
@@ -715,7 +714,7 @@ useEffect(() => {
 
                   <div className="mt-8 border-t border-border/20 pt-5">
                     <p className="text-xs uppercase tracking-wide text-foreground/50">Support</p>
-                    <p className="mt-2 font-semibold text-foreground">cpgeeksofficial@gmail.com</p>
+                    <p className="mt-2 font-semibold text-foreground break-all">cpgeeksofficial@gmail.com</p>
                   </div>
                 </div>
                 <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-primary/[0.05] blur-3xl" />
@@ -726,51 +725,51 @@ useEffect(() => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-24 overflow-hidden" data-scroll-animate id="cta-section">
+      <section className="relative py-16 sm:py-24 overflow-hidden" data-scroll-animate id="cta-section">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[140px]" />
+          <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] sm:h-[420px] sm:w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[140px]" />
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         </div>
 
         <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-[36px] border border-border/40 bg-card/50 backdrop-blur-xl px-8 py-14 md:px-14 md:py-16">
+          <div className="relative overflow-hidden rounded-[24px] sm:rounded-[36px] border border-border/40 bg-card/50 backdrop-blur-xl px-5 py-10 sm:px-8 sm:py-14 md:px-14 md:py-16">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-transparent" />
             <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/[0.05] blur-[120px]" />
 
             <div className="relative z-10 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-sm text-primary font-medium backdrop-blur-sm">
                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                 Start Your Engineering Journey
               </div>
 
-              <div className="mt-8 space-y-5">
-                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-foreground leading-tight">
+              <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-5">
+                <h2 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight text-foreground leading-tight">
                   Build Skills That
-                  <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent"> Actually Matter</span>
+                  <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent block sm:inline"> Actually Matter</span>
                 </h2>
-                <p className="mx-auto max-w-2xl text-lg leading-relaxed text-foreground/65">
+                <p className="mx-auto max-w-2xl text-base sm:text-lg leading-relaxed text-foreground/65">
                   Learn through structured roadmaps, mentorship, practical projects, and interview-focused preparation designed for aspiring software engineers.
                 </p>
               </div>
 
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                 {["Live Cohorts", "DSA", "System Design", "Projects", "Mentorship"].map((tag, idx) => (
-                  <div key={idx} className="rounded-full border border-border/20 bg-background/40 px-4 py-2 text-sm text-foreground/70">
+                  <div key={idx} className="rounded-full border border-border/20 bg-background/40 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-sm text-foreground/70">
                     {tag}
                   </div>
                 ))}
               </div>
 
-              <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/signup">
-                  <Button size="lg" className="group gap-2 rounded-xl px-8 shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 hover:gap-3">
+              <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                <Link href="/signup" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto group gap-2 rounded-xl px-8 shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 hover:gap-3">
                     Start Learning
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
 
-                <Link href="/courses">
-                  <Button size="lg" className="rounded-xl border border-border/40 bg-white/5 px-8 text-foreground shadow-none backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.08] hover:text-foreground">
+                <Link href="/courses" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto rounded-xl border border-border/40 bg-white/5 px-8 text-foreground shadow-none backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.08] hover:text-foreground">
                     Explore Courses
                   </Button>
                 </Link>
@@ -788,22 +787,22 @@ useEffect(() => {
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.8fr_0.8fr] gap-12 border-b border-border/20 pb-12">
-            <div className="space-y-6">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:py-16 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.8fr_0.8fr] gap-10 sm:gap-12 border-b border-border/20 pb-10 sm:pb-12">
+            <div className="space-y-5 sm:space-y-6">
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-xl font-black text-primary shadow-lg shadow-primary/10">CG</div>
+                <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-lg sm:text-xl font-black text-primary shadow-lg shadow-primary/10">CG</div>
                 <div>
-                  <h3 className="text-2xl font-black tracking-tight text-foreground">CP Geeks</h3>
-                  <p className="mt-1 text-sm text-foreground/55">Structured Learning for Engineers</p>
+                  <h3 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">CP Geeks</h3>
+                  <p className="mt-1 text-xs sm:text-sm text-foreground/55">Structured Learning for Engineers</p>
                 </div>
               </div>
-              <p className="max-w-md text-sm leading-relaxed text-foreground/65">
+              <p className="max-w-md text-xs sm:text-sm leading-relaxed text-foreground/65">
                 CP Geeks is a modern engineering learning platform focused on DSA, System Design, Full Stack Development, practical projects, and interview preparation through structured learning paths.
               </p>
               <div className="flex flex-wrap gap-2">
                 {["DSA", "System Design", "Projects", "Mentorship", "Interview Prep"].map((tag, idx) => (
-                  <div key={idx} className="rounded-full border border-border/20 bg-card/40 px-3 py-1.5 text-xs text-foreground/65 backdrop-blur-sm">
+                  <div key={idx} className="rounded-full border border-border/20 bg-card/40 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs text-foreground/65 backdrop-blur-sm">
                     {tag}
                   </div>
                 ))}
@@ -811,8 +810,8 @@ useEffect(() => {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-foreground mb-5">Navigation</h4>
-              <div className="flex flex-col gap-4 text-sm">
+              <h4 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-foreground mb-4 sm:mb-5">Navigation</h4>
+              <div className="flex flex-col gap-3 sm:gap-4 text-xs sm:text-sm">
                 <Link href="/courses" className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
                   Courses
@@ -833,8 +832,8 @@ useEffect(() => {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-foreground mb-5">Legal & Contact</h4>
-              <div className="flex flex-col gap-4 text-sm">
+              <h4 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-foreground mb-4 sm:mb-5">Legal & Contact</h4>
+              <div className="flex flex-col gap-3 sm:gap-4 text-xs sm:text-sm">
                 <Link href="/terms" className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
                   Terms & Conditions
@@ -847,8 +846,8 @@ useEffect(() => {
                   <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
                   Refund Policy
                 </Link>
-                <a href="mailto:cpgeeksofficial@gmail.com" className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
+                <a href="mailto:cpgeeksofficial@gmail.com" className="group flex items-center gap-2 text-foreground/60 transition-colors hover:text-primary break-all">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary/50 transition-all group-hover:scale-125 group-hover:bg-primary" />
                   cpgeeksofficial@gmail.com
                 </a>
               </div>
@@ -856,18 +855,18 @@ useEffect(() => {
           </div>
 
           <div className="flex flex-col items-center justify-between gap-5 pt-8 md:flex-row">
-            <p className="text-sm text-foreground/50 text-center md:text-left">
+            <p className="text-xs sm:text-sm text-foreground/50 text-center md:text-left">
               © {new Date().getFullYear()} CP Geeks. All rights reserved.
             </p>
-            <div className="hidden md:flex items-center gap-3 text-xs text-foreground/40">
+            <div className="hidden md:flex items-center gap-3 text-[10px] sm:text-xs text-foreground/40">
               <span>Built for Engineers</span>
               <div className="h-1 w-1 rounded-full bg-primary/40" />
               <span>Focused Learning</span>
               <div className="h-1 w-1 rounded-full bg-primary/40" />
               <span>Long-Term Growth</span>
             </div>
-            <div className="flex items-center gap-4">
-              <a href="https://www.linkedin.com/company/cp-geeks" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 rounded-xl border border-border/30 bg-card/40 px-4 py-2.5 text-foreground/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-primary/[0.06] hover:text-primary">
+            <div className="flex items-center gap-4 w-full md:w-auto justify-center md:justify-end">
+              <a href="https://www.linkedin.com/company/cp-geeks" target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center w-full md:w-auto gap-3 rounded-xl border border-border/30 bg-card/40 px-4 py-2.5 text-foreground/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-primary/[0.06] hover:text-primary">
                 <Linkedin className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
                 <span className="text-sm font-medium">LinkedIn</span>
               </a>

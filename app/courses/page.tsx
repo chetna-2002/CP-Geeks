@@ -87,13 +87,13 @@ export default function CoursesPage() {
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary font-medium backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs sm:text-sm text-primary font-medium backdrop-blur-sm">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Practical Engineering Courses
             </div>
 
             {/* Heading */}
-            <h1 className="mt-8 text-5xl md:text-7xl font-black tracking-tight text-foreground leading-tight">
+            <h1 className="mt-8 text-4xl sm:text-5xl md:text-7xl font-black tracking-tight text-foreground leading-tight">
               Explore
               <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
                 {" "}
@@ -101,7 +101,7 @@ export default function CoursesPage() {
               </span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-foreground/65">
+            <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-foreground/65">
               Learn DSA, Full Stack Development, System Design, and practical
               engineering skills through structured learning paths and
               mentorship.
@@ -157,7 +157,7 @@ export default function CoursesPage() {
                   {/* Top */}
                   <div className="relative border-b border-border/20 bg-gradient-to-br from-primary/[0.08] via-primary/[0.03] to-transparent p-6">
                     <div className="flex items-start justify-between gap-4">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
                         <span className="text-lg font-black">
                           {String(i + 1).padStart(2, "0")}
                         </span>
@@ -183,7 +183,7 @@ export default function CoursesPage() {
                   <div className="relative z-10 flex flex-1 flex-col p-6">
                     {/* Instructor */}
                     <div className="rounded-2xl border border-border/20 bg-background/30 p-4">
-                      <div className="flex items-center justify-between gap-4">
+                      <div className="flex flex-wrap items-center justify-between gap-4">
                         <div>
                           <p className="text-xs uppercase tracking-wide text-foreground/45">
                             Instructor
@@ -194,7 +194,7 @@ export default function CoursesPage() {
                           </p>
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-left sm:text-right">
                           <p className="text-xs uppercase tracking-wide text-foreground/45">
                             Duration
                           </p>
@@ -211,7 +211,7 @@ export default function CoursesPage() {
 
                     {/* Bottom */}
                     <div className="mt-6 border-t border-border/20 pt-6">
-                      <div className="flex items-center justify-between gap-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                           <p className="text-xs uppercase tracking-wide text-foreground/45">
                             Course Fee
@@ -221,20 +221,22 @@ export default function CoursesPage() {
                             ₹{course.price.toLocaleString()}
                           </p>
                         </div>
-                        {course.slug ? (
-                          <Link href={`/courses/${course.slug}`}>
-                            <Button className="rounded-xl px-6 shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105">
-                              Explore
+                        <div className="w-full sm:w-auto">
+                          {course.slug ? (
+                            <Link href={`/courses/${course.slug}`} className="block w-full">
+                              <Button className="w-full sm:w-auto rounded-xl px-6 shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105">
+                                Explore
+                              </Button>
+                            </Link>
+                          ) : (
+                            <Button
+                              disabled
+                              className="w-full sm:w-auto rounded-xl px-6 opacity-50 cursor-not-allowed"
+                            >
+                              Coming Soon
                             </Button>
-                          </Link>
-                        ) : (
-                          <Button
-                            disabled
-                            className="rounded-xl px-6 opacity-50 cursor-not-allowed"
-                          >
-                            Coming Soon
-                          </Button>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -245,24 +247,24 @@ export default function CoursesPage() {
               ))}
             </div>
           ) : (
-            <div className="flex justify-center py-24">
-              <div className="max-w-md rounded-[28px] border border-border/40 bg-card/50 p-10 text-center backdrop-blur-xl">
+            <div className="flex justify-center py-12 md:py-24">
+              <div className="w-full max-w-md rounded-[28px] border border-border/40 bg-card/50 p-6 sm:p-10 text-center backdrop-blur-xl">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
                   <Search className="h-7 w-7" />
                 </div>
 
-                <h3 className="mt-6 text-2xl font-black text-foreground">
+                <h3 className="mt-6 text-xl sm:text-2xl font-black text-foreground">
                   No Courses Found
                 </h3>
 
-                <p className="mt-3 leading-relaxed text-foreground/60">
+                <p className="mt-3 leading-relaxed text-foreground/60 text-sm sm:text-base">
                   Try searching with different keywords or clear your search.
                 </p>
 
                 <Button
                   variant="outline"
                   onClick={() => setSearchTerm("")}
-                  className="mt-6 rounded-xl border-border/30 bg-background/40"
+                  className="mt-6 w-full sm:w-auto rounded-xl border-border/30 bg-background/40"
                 >
                   Clear Search
                 </Button>

@@ -11,7 +11,8 @@ import {
   Lock,
   X,
   ArrowRight,
-  BrainCircuit
+  BrainCircuit,
+  Menu // <-- Added Menu icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -31,6 +32,9 @@ export function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [username, setUsername] = useState<string>("User");
   const [showAuthModal, setShowAuthModal] = useState(false);
+  
+  // <-- Added mobile menu state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const supabase = createClient();
   const router = useRouter();
@@ -67,6 +71,7 @@ export function Navbar() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setIsMobileMenuOpen(false); // Close mobile menu on logout
     router.push("/login");
   };
 
@@ -90,17 +95,17 @@ export function Navbar() {
           {/* Left */}
           <div className="flex items-center gap-10">
             {/* Logo */}
-            <Link href="/" className="group flex items-center gap-3">
-              <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-lg shadow-primary/10 transition-all duration-300 group-hover:scale-105 group-hover:border-primary/30 group-hover:bg-primary/15">
+            <Link href="/" className="group flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-lg shadow-primary/10 transition-all duration-300 group-hover:scale-105 group-hover:border-primary/30 group-hover:bg-primary/15">
                 <Code2 className="h-5 w-5" />
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               </div>
 
               <div>
-                <h1 className="text-xl font-black tracking-tight text-foreground">
+                <h1 className="text-xl font-black tracking-tight text-foreground line-clamp-1">
                   CP Geeks
                 </h1>
-                <p className="text-xs text-foreground/50">
+                <p className="text-xs text-foreground/50 hidden sm:block">
                   Structured Engineering Learning
                 </p>
               </div>
@@ -135,7 +140,7 @@ export function Navbar() {
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Theme Toggle */}
             {mounted && (
               <Button
@@ -152,9 +157,9 @@ export function Navbar() {
               </Button>
             )}
 
-            {/* Auth */}
+            {/* Auth Desktop */}
             {!user ? (
-              <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-3">
                 <Link href="/login">
                   <Button
                     variant="ghost"
@@ -189,7 +194,7 @@ export function Navbar() {
                       </div>
 
                       {/* Info */}
-                      <div className="hidden text-left sm:block">
+                      <div className="hidden text-left md:block">
                         <p className="max-w-[120px] truncate text-sm font-semibold text-foreground">
                           {username}
                         </p>
@@ -233,8 +238,73 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+
+            {/* Mobile Menu Toggle Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden rounded-2xl border border-border/30 bg-card/40 backdrop-blur-xl transition-all duration-300 hover:border-primary/20 hover:bg-primary/[0.06]"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="absolute top-20 left-0 right-0 border-b border-border/30 bg-background/95 px-4 py-6 backdrop-blur-xl lg:hidden shadow-xl animate-in slide-in-from-top-2">
+            <div className="flex flex-col gap-2">
+              {navLinks.map((item, i) => {
+                if (item.isProtected && !user) {
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full rounded-xl px-4 py-3 text-left text-base font-medium text-foreground/65 transition-all duration-300 hover:bg-primary/[0.06] hover:text-primary outline-none"
+                    >
+                      {item.label}
+                    </button>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={i}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full rounded-xl px-4 py-3 text-base font-medium text-foreground/65 transition-all duration-300 hover:bg-primary/[0.06] hover:text-primary"
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+
+              {/* Auth links for small mobile screens inside the menu */}
+              {!user && (
+                <div className="mt-4 flex flex-col gap-3 sm:hidden border-t border-border/20 pt-4">
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full justify-start rounded-xl h-12">
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button className="w-full justify-start rounded-xl h-12 shadow-lg shadow-primary/20">
+                      Get Started
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* THE AUTH TEASER MODAL */}
