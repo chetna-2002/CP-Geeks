@@ -8,24 +8,12 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'CP Geeks - Build the Future of Tech',
+  title: 'CP Geeks - Learn. Code. Grow',
   description: 'Master system design, DSA, competitive programming, and engineering excellence with industry experts.',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: "/logo-desktop.png",
+    shortcut: "/logo-desktop.png",
+    apple: "/logo-desktop.png",
   },
 }
 

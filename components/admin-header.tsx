@@ -155,20 +155,17 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
                 </div>
               </div>
 
-              <DropdownMenuSeparator />
+              {/* <DropdownMenuSeparator /> */}
 
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={() => router.push("/dashboard/admin/profile")}
                 className="cursor-pointer gap-2 py-2"
               >
                 <User className="h-4 w-4" />
                 Profile
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
 
-              <DropdownMenuItem className="cursor-default gap-2 py-2 opacity-70">
-                <Sparkles className="h-4 w-4" />
-                Admin Access
-              </DropdownMenuItem>
+              
 
               <DropdownMenuSeparator />
 

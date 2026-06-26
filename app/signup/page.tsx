@@ -2,20 +2,14 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import { icons, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -132,8 +126,14 @@ export default function SignupPage() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-xl font-black text-primary shadow-lg shadow-primary/10">
-                CG
+              <div className="relative h-16 w-16 overflow-hidden rounded-2xl">
+                <Image
+                  src="/logo-desktop.png"
+                  alt="CP Geeks"
+                  fill
+                  priority
+                  className="object-contain"
+                />
               </div>
 
               <div>

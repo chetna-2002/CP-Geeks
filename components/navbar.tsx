@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "next-themes";
 import {
   Moon,
@@ -23,7 +24,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
+  DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 
 export function Navbar() {
@@ -32,7 +33,7 @@ export function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [username, setUsername] = useState<string>("User");
   const [showAuthModal, setShowAuthModal] = useState(false);
-  
+
   // <-- Added mobile menu state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -44,7 +45,7 @@ export function Navbar() {
 
     const getUserAndProfile = async () => {
       const {
-        data: { user },
+        data: { user }
       } = await supabase.auth.getUser();
 
       if (!user) {
@@ -77,9 +78,13 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/courses", label: "Courses", isProtected: false },
-    { href: "/dashboard/user/dsa-sheets", label: "DSA Sheets", isProtected: true },
+    {
+      href: "/dashboard/user/dsa-sheets",
+      label: "DSA Sheets",
+      isProtected: true
+    },
     { href: "/jobs", label: "Jobs", isProtected: false },
-    { href: "/instructors", label: "Mentors", isProtected: false },
+    { href: "/instructors", label: "Mentors", isProtected: false }
   ];
 
   return (
@@ -91,22 +96,31 @@ export function Navbar() {
         </div>
 
         <div className="relative mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          
           {/* Left */}
           <div className="flex items-center gap-10">
             {/* Logo */}
-            <Link href="/" className="group flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-              <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-lg shadow-primary/10 transition-all duration-300 group-hover:scale-105 group-hover:border-primary/30 group-hover:bg-primary/15">
-                <Code2 className="h-5 w-5" />
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <Link
+              href="/"
+              className="group flex items-center gap-3"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl transition-all duration-300 group-hover:scale-105">
+                <Image
+                  src="/logo-desktop.png"
+                  alt="CP Geeks"
+                  fill
+                  priority
+                  className="object-contain"
+                />
               </div>
 
               <div>
-                <h1 className="text-xl font-black tracking-tight text-foreground line-clamp-1">
+                <h1 className="text-xl font-black tracking-tight text-foreground">
                   CP Geeks
                 </h1>
-                <p className="text-xs text-foreground/50 hidden sm:block">
-                  Structured Engineering Learning
+
+                <p className="hidden lg:block text-xs text-muted-foreground">
+                  Learn. Code. Grow.
                 </p>
               </div>
             </Link>
@@ -213,7 +227,9 @@ export function Navbar() {
                   {/* User */}
                   <div className="border-b border-border/20 px-4 py-4">
                     <p className="font-semibold text-foreground">{username}</p>
-                    <p className="mt-1 text-xs text-foreground/55">{user.email}</p>
+                    <p className="mt-1 text-xs text-foreground/55">
+                      {user.email}
+                    </p>
                   </div>
 
                   {/* Profile */}
@@ -290,12 +306,21 @@ export function Navbar() {
               {/* Auth links for small mobile screens inside the menu */}
               {!user && (
                 <div className="mt-4 flex flex-col gap-3 sm:hidden border-t border-border/20 pt-4">
-                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full justify-start rounded-xl h-12">
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start rounded-xl h-12"
+                    >
                       Log In
                     </Button>
                   </Link>
-                  <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link
+                    href="/signup"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
                     <Button className="w-full justify-start rounded-xl h-12 shadow-lg shadow-primary/20">
                       Get Started
                     </Button>
@@ -311,13 +336,12 @@ export function Navbar() {
       {showAuthModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm px-4 animate-in fade-in duration-200">
           <div className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-border/40 bg-card/60 p-8 shadow-2xl backdrop-blur-xl animate-in zoom-in-95 duration-200">
-            
             {/* Decorative Background Glows */}
             <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
             <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
 
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowAuthModal(false)}
               className="absolute right-6 top-6 rounded-full p-2 text-foreground/50 transition-colors hover:bg-background/50 hover:text-foreground outline-none z-20"
             >
@@ -338,19 +362,28 @@ export function Navbar() {
                 Unlock DSA Mastery
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-foreground/60">
-                You need a CP Geeks account to track your progress, view video solutions, and access our curated problem database.
+                You need a CP Geeks account to track your progress, view video
+                solutions, and access our curated problem database.
               </p>
 
               {/* Actions */}
               <div className="mt-8 flex w-full flex-col gap-3">
-                <Link href="/signup" className="w-full" onClick={() => setShowAuthModal(false)}>
+                <Link
+                  href="/signup"
+                  className="w-full"
+                  onClick={() => setShowAuthModal(false)}
+                >
                   <Button className="h-12 w-full rounded-xl bg-primary font-bold text-primary-foreground shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
                     Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="/login" className="w-full" onClick={() => setShowAuthModal(false)}>
-                  <Button 
-                    variant="outline" 
+                <Link
+                  href="/login"
+                  className="w-full"
+                  onClick={() => setShowAuthModal(false)}
+                >
+                  <Button
+                    variant="outline"
                     className="h-12 w-full rounded-xl border border-border/40 bg-background/50 text-foreground backdrop-blur-xl transition-all duration-300 hover:border-primary/30 hover:bg-primary/5 hover:text-primary shadow-none"
                   >
                     I already have an account
@@ -358,7 +391,6 @@ export function Navbar() {
                 </Link>
               </div>
             </div>
-            
           </div>
         </div>
       )}
